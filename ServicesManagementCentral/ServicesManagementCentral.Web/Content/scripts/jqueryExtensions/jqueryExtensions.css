@@ -1,0 +1,34 @@
+﻿/*.ui-autocomplete-loading {
+    background: url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/images/ui-anim_basic_16x16.gif) no-repeat right center
+}
+*/
+.ui-autocomplete-loading {
+    background: white url("./ui-anim_basic_16x16.gif") no-repeat right center;
+}
+
+.is-autocomplete {
+    background-color: #ffffff;
+    position: absolute !important;
+    left: unset !important;
+    top: unset !important;
+    width: calc(100% - 2rem) !important;
+    z-index:9;
+    height:20rem;
+    overflow-y:auto;
+}
+
+.ui-state-active {
+    border: none;
+}
+
+.is-li-autocomplete {
+    cursor: pointer;
+}
+
+.is-li-autocomplete:hover {
+    background-color: yellow;
+}
+
+.is-li-autocomplete .ui-menu-item-wrapper {
+    background-color: transparent;
+}

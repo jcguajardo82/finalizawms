@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesManagementCentral.Web", "ServicesManagementCentral.Web\ServicesManagementCentral.Web.csproj", "{2375DA97-2738-4DD7-A4C0-5118F310A8E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2375DA97-2738-4DD7-A4C0-5118F310A8E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2375DA97-2738-4DD7-A4C0-5118F310A8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2375DA97-2738-4DD7-A4C0-5118F310A8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2375DA97-2738-4DD7-A4C0-5118F310A8E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45
+		SolutionGuid = {40DE3951-98AE-4659-89C6-AAD50C3A8F16}
+	EndGlobalSection
+EndGlobal

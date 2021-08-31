@@ -1,0 +1,817 @@
+﻿
+@{
+    ViewBag.Title = "Call Center";
+}
+
+
+<div class="row">
+    <div class="col-xs-5 col-md-5 col-lg-5">
+        <div class="ibox">
+            <div class="ibox-title">
+                Sucursales
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <table style="width:100%;">
+                    <tr>
+                        <td>
+                            <select class="form-control" id="cmbServicio" name="cmbServicio">
+                                <option selected="selected" value="0">--Elegir Servicio--</option>
+                                <option value="1">Cancelacion</option>
+                                <option value="2">Retorno</option>
+
+                            </select>
+                        </td>
+                        <td><input class="form-control" type="text" placeholder="Código Postal" value="" id="txtCp"></td>
+                        <td>
+                            <button type="button" id="btnTienda" class="btn btn-primary" onclick="cargaTdas()">
+                                Tienda
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        @*<td colspan="3"><label class="form-control">24-Cumbres</label></td>*@
+                        <td colspan="3">
+                            <select class="form-control" id="cmbTda" name="cmbTda">
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-7 col-md-7 col-lg-7">
+        <div class="ibox">
+            <div class="ibox-title">
+                Buscador  <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <table style="width:100%;">
+                    <tr>
+                        @*<td>
+                                <select class="form-control" id="cmbServicio" name="cmbServicio">
+                                    <option selected="selected" value="0">1</option>
+                                </select>
+                            </td>*@
+                        <td>
+                            <input class="form-control" type="text" placeholder="Producto" value="" id="txtProdArt">
+                        </td>
+                        <td style="text-align:center;">
+                            <button type="button" id="btnBuscar" class="btn btn-primary" onclick="CargaProducto()" disabled>
+                                Buscar
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" id="btnHistoria" class="btn btn-primary" onclick="clickLogin()">
+                                Historia
+                            </button>
+                        </td>
+                    </tr>
+                    @*<tr>
+                            <td colspan="2">
+                                <select class="form-control" id="cmbMarcas" name="cmbMarcas">
+                                    <option selected="selected" value="0">--Todas--</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select class="form-control" id="cmbDivision" name="cmbDivision">
+                                    <option selected="selected" value="0">--Todas--</option>
+                                </select>
+                            </td>
+                        </tr>*@
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-10 col-md-10 col-lg-10">
+        <table id="tblBusquedaArt" class="table table-striped table-bordered table-hover">
+            <thead class="bg-primary">
+                <tr role="row">
+                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 118px;">Código</th>
+                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1">Descripción</th>
+                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 116px;">Marca</th>
+                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 126px;">Precio</th>
+                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 124px;">Normal</th>
+                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 120px;">Dscto</th>
+                </tr>
+            </thead>
+            @*<tbody>
+                    <tr>
+                        <td>123124</td>
+                        <td>Coca Cola 600 ml</td>
+                        <td>Coca Cola</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                    </tr>
+                    <tr>
+                        <td>123124</td>
+                        <td>Coca Cola 600 ml</td>
+                        <td>Coca Cola</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                    </tr>
+                    <tr>
+                        <td>123124</td>
+                        <td>Coca Cola 600 ml</td>
+                        <td>Coca Cola</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                    </tr>
+                    <tr>
+                        <td>123124</td>
+                        <td>Coca Cola 600 ml</td>
+                        <td>Coca Cola</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                        <td>$12.22</td>
+                    </tr>
+                </tbody>*@
+        </table>
+    </div>
+    <div class="col-xs-2 col-md-2 col-lg-2">
+        <img id="imgProduct" src="~/Content/images/theme/default_image_01.png" class="img-lg">
+    </div>
+</div>
+<div class="row" style="padding-bottom:50px;">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="ibox ">
+            <div class="ibox-content">
+                <div id="wizard">
+                    <h3>Cliente</h3>
+                    <section>
+                        <div class="row" id="divVerificaCliente">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <p>
+                                    <b>Identificación del Cliente<br />Solicite al cliente cualquiera de los siguientes datos:</b>
+                                    <ul>
+                                        <li>Direccion de Correo Electronico</li>
+                                        <li>Número Telefonico(Capture sin Guiones)</li>
+                                        <li>Si el Cliente no ha sido registrado con anterioridad debera darlo de alta</li>
+                                    </ul>
+                                </p>
+                                <div class="input-group">
+                                    <input type="text" placeholder="CARACTERES VALIDOS:letras,números,arroba(&#64;),guión medio(-) y bajo(_)" class="form-control"> <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary" onclick="VerificaCliente()">
+                                            Verificar
+                                        </button>
+                                    </span>
+                                </div>
+                                <hr />
+                            </div>
+                        </div>
+                        <div class="row" id="divBuscaCliente">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <p>
+                                    <b>Buscador de Clientes</b><br />Se puede buscar por nombre y apellido paterno y materno.Para buscar por telefono ingrese solo digitos.Para buscar por direccion captura
+                                    <b>Calle #,Colonia y Ciudad</b> usando comas como separador
+                                </p>
+                                <div class="input-group">
+                                    <input type="text" placeholder="CARACTERES VALIDOS:letras,números,arroba(&#64;),guión medio(-) y bajo(_)" class="form-control"> <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary" onclick="BuscarClinete()">
+                                            Buscar
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divResultClient" style="display:none;">
+                            <div class="col-xs-4 col-md-4 col-lg-4"></div>
+                            <div class="col-xs-4 col-md-4 col-lg-4">
+                                <table style="width:100%" class="table table-warning">
+                                    <tr>
+                                        <td>Nombre:</td>
+                                        <td><b>Juan Perex</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Folio del Cliente:</td>
+                                        <td>Juan Perex</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Clave:</td>
+                                        <td>juan@gmial.com</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dirección:</td>
+                                        <td>
+                                            <p>
+                                                Villas de Belgica 277<br />
+                                                Colonia Roble Nuevo<br />
+                                                General Escobedo, N.L.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Teléfono:</td>
+                                        <td>8119652099</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-4 col-md-4 col-lg-4">
+                                <button type="button" class="btn btn-default btn btn-xs" onclick="NuevaBusqueda()">
+                                    Nueva Busqueda
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Fecha de Entrega</h3>
+                    <section>
+                        <p><b>*Recuerda al cliente que nuestro horario de entrega es de 8:00 am a 10:00 pm de lunes a domingo, seleciona el dia y hora que indique el cliente </b></p>
+                        <div class="row">
+                            <div class="col col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    <label>Día</label>
+                                    <select class="form-control m-b" id="ddlDias"><option value="2021/04/16">HOY - 16 Abril</option><option value="2021/04/17">SÁBADO - 17 Abril</option><option value="2021/04/18">DOMINGO - 18 Abril</option><option value="2021/04/19">LUNES - 19 Abril</option><option value="2021/04/20">MARTES - 20 Abril</option><option value="2021/04/21">MIÉRCOLES - 21 Abril</option><option value="2021/04/22">JUEVES - 22 Abril</option></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    <label>Entre</label>
+                                    <select class="form-control m-b" id="ddlHoras"><option value="15:01:00">15:01:00 - 16:00:00</option><option value="16:01:00">16:01:00 - 17:00:00</option><option value="17:01:00">17:01:00 - 18:00:00</option><option value="18:01:00">18:01:00 - 19:00:00</option><option value="19:01:00">19:01:00 - 20:00:00</option><option value="20:01:00">20:01:00 - 21:00:00</option><option value="21:01:00">21:01:00 - 22:00:00</option></select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Carrito de Compras</h3>
+                    <section>
+                        @*<input id="flagCarrito" name="flagCarrito" value="1" style="visibility:hidden" />*@
+                        <div class="row">
+                            <div class="col-10"></div>
+                            <div class="col-2">
+                                <button type="button" onclick="addProduct()" style="visibility:visible;" class="btn btn-xs btn-danger btn-circle"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <table id="tblBusquedaArt" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                    <thead class="bg-warning">
+                                        <tr role="row">
+
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1">Descripción</th>
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width:10%;">Precio Normal</th>
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width:10%;">Precio Oferta</th>
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width:20%;">Cantidad</th>
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width:15%;">Total</th>
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width:10%;">Borrar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="feedback2">
+                                        @*<tr>
+                                                <td>123124<br /><input type="text" placeholder="Indicaciones y Observaciones" class="form-control input-sm" /></td>
+                                                <td>$12.22</td>
+                                                <td>$12.22</td>
+                                                <td><input type="text" style="width:50px;" /> pza</td>
+                                                <td>2</td>
+                                                <td><input type="checkbox" class="checkbox" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>123124<br /><input type="text" placeholder="Indicaciones y Observaciones" class="form-control input-sm" /></td>
+                                                <td>$12.22</td>
+                                                <td>$12.22</td>
+                                                <td><input type="text" style="width:50px;" /> pza</td>
+                                                <td>2</td>
+                                                <td><input type="checkbox" class="checkbox" /></td>
+                                            </tr>*@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <table id="tblBusquedaArt" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                    <thead class="bg-warning">
+                                        <tr role="row">
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="2">Observaciones e instrucciones generales</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1 . Favor de llamar por telefono antes de entregar</td>
+                                            <td>
+                                                <button type="button" style="visibility:visible;" class="btn btn-xs btn-danger btn-circle"><i class="fa fa-close"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td><input type="text" class="form-control input-sm" /></td>
+                                            <td>
+                                                <button type="button" id="btnHistoria" class="btn btn-primary" onclick="clickLogin()">
+                                                    Agregar Observaciones
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Metodo de  Entrega</h3>
+                    <section>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        ENTREGA EN TIENDA (Si el cliente elige acudir por su pedido selecciona esta opción)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        ENTREGA A DOMICILIO (Confirma la Dirección del cliente o ingresa una nueva)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-lg-6">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <b>Nombre de la persona que recibira el pedido</b>
+                                            <input type="text" id="rec_name" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Ciudad</b>
+                                            <input type="text" id="rec_ciudad" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Estado</b>
+                                            <input type="text" id="rec_estado" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Calle</b>
+                                            <input type="text" id="rec_calle" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Número</b>
+                                            <input type="text" id="rec_num" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Número Interiór(si aplica)</b>
+                                            <input type="text" id="rec_nunInt" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Colonia</b>
+                                            <input type="text" id="rec_col" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Código Postal</b>
+                                            <input type="text" id="rec_CP" class="form-control input-sm" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-6 col-md-6 col-lg-6">
+                                <p>
+                                    Juan Perex<br />
+                                    Villas de Belgica 277<br />
+                                    Colonia Roble nuevo<br />
+                                    Escobedo<br />
+                                    CP: 092890
+                                    <br />
+                                    <button type="button" class="btn btn-default btn btn-xs" onclick="GetTdasTrasp()">
+                                        Utilizar esta direccón
+                                    </button>
+                                </p>
+                                <br />
+
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Forma de Pago</h3>
+                    <section>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <table id="tblFormaPago" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                    <thead class="bg-warning">
+                                        <tr role="row">
+                                            <th class="text-center sorting" tabindex="0" rowspan="1" colspan="2">Pago Contra Entrega</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="efectivo" checked>
+                                                    <label class="form-check-label" for="flexRadioDefault2">
+                                                        Efectivo y/o vales de papel de despensa
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                Efectivo: <input type="text" id="in_pago" width="100px;" /><br />
+                                                Vales:&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" id="in_vales" width="100px;" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="debito" checked>
+                                                    <label class="form-check-label" for="flexRadioDefault2">
+                                                        Tarjeta de Credito Terminal Portatil
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="credito" checked>
+                                                    <label class="form-check-label" for="flexRadioDefault2">
+                                                        Tarjeta de Debito Terminal Portatil
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Resumen</h3>
+                    <section>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <table id="tblFormaPago" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                    <thead class="bg-warning">
+                                        <tr role="row">
+                                            <th class="text-center sorting">Descripción</th>
+                                            <th class="text-center sorting">Cantidad</th>
+                                            <th class="text-center sorting">Precio</th>
+                                            <th class="text-center sorting">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                coca cola 500 ml
+                                            </td>
+                                            <td>
+                                                1
+                                            </td>
+                                            <td>
+                                                $10.00
+                                            </td>
+                                            <td>
+                                                $10.00
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                coca cola 500 ml
+                                            </td>
+                                            <td>
+                                                1
+                                            </td>
+                                            <td>
+                                                $10.00
+                                            </td>
+                                            <td>
+                                                $10.00
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td colspan="2"><b>Costo total de la orden</b></td>
+                                            <td><b>$20.00</b></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <table class="table">
+                                    <tr>
+                                        <td><b>Sera en tregada en:</b></td>
+                                        <td>
+                                            <p>
+                                                Juan Perex<br />
+                                                Villas de Belgica 277<br />
+                                                Colonia Roble nuevo<br />
+                                                Escobedo<br />
+                                                CP: 092890
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Fecha de entrega:</b></td>
+                                        <td>2021-07-01 21:00 HRS </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Forma de Pago:</b></td>
+                                        <td>Tarjeta de Credito / Terminal Portatil </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 col-lg-12">
+                        <table id="tblBusquedaArt2" class="table table-striped table-bordered table-hover">
+                            <thead class="bg-primary">
+                                <tr role="row">
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 118px;">Código</th>
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1">Descripción</th>
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 116px;">Marca</th>
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 126px;">Precio</th>
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 124px;">Normal</th>
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 120px;">Dscto</th>
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 120px;">Cantidad</th>
+
+                                    <th class="text-center sorting" tabindex="0" rowspan="1" colspan="1" style="width: 120px;"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="feedback"></tbody>
+                        </table>
+                    </div>
+                    @*<div class="col-xs-2 col-md-2 col-lg-2">
+                        <img id="imgProduct2" src="~/Content/images/theme/default_image_01.png" class="img-lg">
+                    </div>*@
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon2">Cantidad</span>
+                            <input type="text" id="Addcantidad" name="Addcantidad" class="form-control" placeholder="Cantidad de producto" aria-describedby="basic-addon2">
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="addProduct2()" data-dismiss="modal">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="add_product" name="add_product" value="1" style="visibility:hidden" />
+
+<input id="add_description" name="add_description" value="1" style="visibility:hidden" />
+<input id="add_price" name="add_price" value="1" style="visibility:hidden" />
+<input id="add_price_dsco" name="add_price_dsco" value="1" style="visibility:hidden" />
+
+@section scripts {
+
+    <link href="~/Content/Inspinia/Styles/steps/jquery.steps.css" rel="stylesheet" />
+    <script src="~/Content/Inspinia/plugins/steps/jquery.steps.min.js"></script>
+
+    <script>
+        var listaSeleccion = [];
+
+        $(document).ready(function () {
+           
+
+            $("#wizard").steps({
+                labels: {
+                    current: "current step:",
+                    pagination: "Pagination",
+                    finish: "Confirmar Orden",
+                    next: "Siguiente",
+                    previous: "Atras"
+
+                },
+                headerTag: "h3",
+                bodyTag: "section",
+                transitionEffect: "slideLeft",
+                autoFocus: true,
+                stepsOrientation: "vertical"
+                ,onFinished: function (event, currentIndex) {
+                    alert('ya acabe');
+                }
+            });
+
+            $("[name=btn]").click(function () {
+                alert('click')
+                $(this).parents("tr").remove();
+            });
+
+
+
+        });
+
+        function cargaTdas() {
+
+
+            $.ajax({
+                        "url": "@Url.Action("TiendasCP", "CallCenter")",
+                        "type": "get",
+                        "data": { "cp": document.getElementById("txtCp").value },
+
+                        "dataType": "json",
+                        "success": function (data) {
+                            var options = "";
+                            $.each(data, function (index, value) {
+                                options += '<option value="' + value.id + '">' + value.nombre + '</option>';
+                            });
+                            $("#cmbTda").html(options);
+
+                            $("#cmbTda option[value=" + 0 + "]").attr("selected", true);
+                            //$('#csdc_tipoequipo option:not(:selected)').attr('disabled', true);
+                        }
+                    });
+
+
+        }
+
+        function CargaProducto() {
+
+            $("#exampleModal").modal("show");
+
+
+            //imgProduct
+            //document.getElementById("imgProduct").src = "https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/BGBD_STG/on/demandware.static/-/Sites-soriana-grocery-master-catalog/default/dw4f7cd627/images/product/7501022133286-A.jpg";
+
+            $('#tblBusquedaArt2 > tbody').empty();
+            document.getElementById("Addcantidad").value = "";
+            //tblBusquedaArt
+            $.ajax({
+                        "url": "@Url.Action("GetProduct", "CallCenter")",
+                        "type": "get",
+                        "data": { "product": document.getElementById("txtProdArt").value },
+
+                        "dataType": "json",
+                        "success": function (data) {
+                            //var options = "";
+                            //$.each(data, function (index, value) {
+                            //    options += '<option value="' + value.id + '">' + value.nombre + '</option>';
+                            //});
+                            //$("#cmbTda").html(options);
+
+                            //$("#cmbTda option[value=" + 0 + "]").attr("selected", true);
+                            //$('#csdc_tipoequipo option:not(:selected)').attr('disabled', true);
+
+                            debugger;
+
+                            $.each(data.data, function (index, value) {
+                                
+
+                                $('#feedback').append("<tr><td>" + value.Barcode + "</td>"
+                                    + "<td>" + value.Description + "</td>"
+                                    + "<td>" + value.Company + "</td>"
+                                    + "<td>" + value.Price + "</td>"
+                                    + "<td>" + value.Price + "</td>"
+                                    + "<td>" + value.PromotionalPrice + "</td>"
+                                    + "<td><input type=\"text\" id=\"Addcantidad\" name=\"Addcantidad\" class=\"form-control\" placeholder=\"Cantidad de producto\" aria-describedby=\"basic-addon2\"></td>"
+                                    + "<td>"
+                                    + "<div class=\"col-xs-2 col-md-2 col-lg-2\">"
+                                    + "<img id=\"imgProduct2\" src=\" " + value.UrlImage + " \" class=\"img-lg\" style = \"width: 80px;\">"
+                                    + "</div>"
+
+                                    + "</td></tr>");
+
+
+                                listaSeleccion.push(new Producto(value.Barcode, value.Description, value.Price, ""));
+
+                                document.getElementById("imgProduct2").src = value.UrlImage;
+
+                            });
+
+
+                            
+
+
+                            //document.getElementById("add_product").value = data.data.Barcode;
+                            //document.getElementById("add_description").value = data.data.Description;
+                            //document.getElementById("add_price").value = data.data.Price;
+                            //document.getElementById("add_price_dsco").value = data.data.PromotionalPrice;
+
+
+                        }
+                    });
+        }
+
+        function Producto(code,descripcion, precio, cantidad) {
+            this.code = code;
+            this.descripcion = descripcion;
+            this.precio = precio;
+            this.cantidad = cantidad;
+
+        }
+
+
+        function addProduct() {
+
+
+            document.getElementById("txtProdArt").focus();
+            document.getElementById('btnBuscar').disabled = false;
+        }
+
+        function addProduct2(product) {
+
+
+            debugger;
+
+            listaSeleccion.forEach((item) => { //Recorro primer arreglo
+
+               /* alert(item.code);*/
+                debugger;
+                if (item.code == product) {
+                    $('#feedback2').append("<tr id=\"" + item.product + "\"> <td>" + item.descripcion + "<br /><input type=\"text\" placeholder=\"Indicaciones y Observaciones\" class=\"form-control input-sm\"/>" + "</td>"
+                        + "<td>" + item.price + "</td>"
+                        + "<td>" + item.price + "</td>"
+                        + "<td>" + document.getElementById("Addcantidad").value + "</td>"
+                        + "<td>" + item.price * parseInt(document.getElementById("Addcantidad").value) + "</td>"
+                        + "<td>" + "<button type=\"button\" id=\"btn\" name=\"btn\" class=\"btn btn-primary\" onclick=\"eliminar(" + document.getElementById("add_product").value + ") \">Eliminar</button>" + "</td></tr>");
+                }
+
+                //Luego recorro la propiedad mensajes dentro del arreglo
+                //item.mensajes.forEach((mensaje) => {
+                //    // Obtengo cada mensaje de la propiedad y la guardo en mi arreglo de mensajes
+                //    mensajes.push(mensaje);
+                //});
+            });
+
+            
+
+            //onclick=\"eliminar(" + document.getElementById("add_product")+")
+
+           /* $("#exampleModal").modal("hidde");*/
+        }
+
+        function eliminar(p) {
+            var ba = "#" + p;
+
+            $(ba).remove();
+
+            //$(this).parents("tr").remove();
+
+        }
+
+
+        function buscarCliente() {
+            $('#divVerificaCliente').hide();
+            $('#divBuscaCliente').hide();
+            $('#divResultClient').show();
+        }
+
+        function VerificaCliente() {
+            $('#divVerificaCliente').hide();
+            $('#divBuscaCliente').hide();
+            $('#divResultClient').show();
+        }
+        function NuevaBusqueda() {
+            $('#divVerificaCliente').show();
+            $('#divBuscaCliente').show();
+            $('#divResultClient').hide();
+        }
+
+    </script>
+
+}

@@ -1,0 +1,835 @@
+﻿
+@{
+    ViewBag.Title = "Orden";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@*<link href="~/Content/Inspinia/Styles/clockpicker/clockpicker.css" rel="stylesheet" />
+
+    <!-- Color picker -->
+    <script src="http://webapplayers.com/inspinia_admin-v2.9.4/js/plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
+
+    <!-- Clock picker -->
+    <script src="http://webapplayers.com/inspinia_admin-v2.9.4/js/plugins/clockpicker/clockpicker.js"></script>*@
+
+<link href="~/Content/plugins/clockpicker/dist/bootstrap-clockpicker.min.css" rel="stylesheet" />
+
+
+<div class="top-navigation pace-running pace-running pace-running pace-running">
+    <div class="row">
+        <div class="col-sm-2 col-md-2 col-lg-2"></div>
+        <div class="col-sm-8 col-md-8 col-lg-8 text-center"><h2>Recepcion de Guía del transportista</h2> </div>
+        <div class="col-sm-2 col-md-2 col-lg-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+            <a onclick="$('#dlgGuia').modal('show');" title="Click para ver el detalle de la orden" class="btn btn-link">
+                Para ver la guia hacer click aqui.
+            </a>
+        </div>
+    </div>
+    @{
+        if (Session["OrderSelected"] != null)
+        {
+            System.Data.DataSet ds = (System.Data.DataSet)Session["OrderSelected"];
+            var dt = ds.Tables[0];
+
+
+            int index = 0;
+            foreach (System.Data.DataRow p in dt.Rows)
+            {
+                <input id="OrderNo" name="OrderNo" value="@p["OrderNo"]" style="visibility:hidden" />
+                <input id="UeNo" name="UeNo" value="@p["UeNo"]" style="visibility:hidden" />
+                <input id="StoreNum" name="StoreNum" value="@p["StoreNum"]" style="visibility:hidden" />
+                <input id="OrderStatus" name="OrderStatus" value="@p["StatusUe"]" style="visibility:hidden" />
+                <input id="ShipperName" name="ShipperName" value="@p["ShipperName"]" style="visibility:hidden" />
+
+
+                <div class="row">
+
+                    <div class="col-lg-4">
+                        <div class="ibox-content">
+                            <div class="feed-activity-list">
+
+                                <div class="feed-element">
+                                    <div>
+                                        <i class="fa fa-bus payment-icon-big text-success"></i>
+                                        <h4>Guia</h4>
+                                        <h4 class="text-navy">@p["OrderNo"]</h4>
+                                        <p>
+                                            <span><strong>Chofer:</strong> @p["ShipperName"]</span><br>
+                                            <span><strong>Fecha Asignacion:</strong> @p["CarrierDate"]</span>
+                                        </p>
+                                        @*<span>Orden:</span>*@
+                                        <h4>Orden</h4>
+                                        <h4 class="text-navy">@p["OrderNo"]</h4>
+                                        <h4>Entrega</h4>
+                                        <h4 class="text-navy">@p["OrderDeliveryDate"].ToString()</h4>
+                                    </div>
+                                </div>
+
+                                <div class="feed-element">
+                                    <div>
+                                        <i class="fa fa-user payment-icon-big text-warning"></i>
+                                        <h4>Nombre del Cliente:</h4>
+                                        <h4 class="text-navy">@p["CustomerName"]</h4>
+                                        <address>
+                                            <strong>Direccion:</strong><br>
+                                            @p["Address1"]<br>
+                                            @p["Address2"], @p["PostalCode"]<br>
+                                            <abbr title="Phone">T:</abbr> @p["Phone"]
+                                        </address>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-lg-6">
+                        <div class="row">
+
+                            <div class="payment-card">
+
+                                <div class="col-md-12">
+
+                                    <form role="form" id="payment-form">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="col-md-8">
+                                                    <fieldset>
+                                                        <legend>
+                                                            ¿La orden se entregó?
+                                                        </legend>
+                                                        <div class="form-check abc-radio abc-radio-info form-check-inline">
+                                                            <input type="radio" checked="" value="S" id="optionsRadios1" name="optionsRadios"> Si
+                                                        </div>
+                                                        <div class="form-check abc-radio form-check-inline">
+                                                            <input type="radio" value="N" id="optionsRadios2" name="optionsRadios"> No
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label>Nombre e Identificación</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre e Identificacion" required="">
+                                                        <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
+
+
+                                                        @*<label class="col-sm-3 col-form-label">Nombre e Identificación:</label>*@
+
+                                                        @*<div class="col-sm-9"><input type="text" id="nombre" name="nombre" placeholder="Nombre e Identificación" class="form-control"></div>
+                                                            <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>*@
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-7 col-md-7">
+                                                <div class="form-group">
+                                                    <label>ENTREGA</label>
+                                                    <div class="input-group date" id="RepFechaFolioDate">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                        <input class="form-control datepicker" id="fechaE" name="fechaE"
+                                                               placeholder="Del" type="text" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 col-md-5" style="padding-top: 25px;">
+                                                <div class="form-group">
+
+                                                    <div class="input-group clockpicker" data-autoclose="true">
+                                                        <input type="text" class="form-control" id="timeD" value="09:30">
+                                                        <span class="input-group-addon">
+                                                            <span class="fa fa-clock-o"></span>
+                                                        </span>
+                                                    </div>
+                                                    @*<div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
+                                                            <input type="text" class="form-control" value="13:14">
+                                                            <span class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-time"></span>
+                                                            </span>
+                                                        </div>*@
+                                                </div>
+                                            </div>
+                                            @*<div class="col-5 col-md-5 float-right">
+                                                    <div class="form-group">
+                                                        <div class="input-group clockpicker" data-autoclose="true">
+                                                            <input type="text" class="form-control" value="09:30">
+                                                            <span class="input-group-addon">
+                                                                <span class="fa fa-clock-o"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="col-md-12">
+                                                    <fieldset>
+                                                        <legend>
+                                                            NOTA:: Si no se registra la fecha REAL de entrega,la orden no se cerrará.
+                                                        </legend>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label>COMENTARIOS</label>
+                                                    <input type="text" class="form-control" id="comentarios" name="comentarios" placeholder="COMENTARIOS">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <button class="btn btn-primary" type="button" onclick="FinalizaEmbarque2()">FINALIZAR!</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        }
+
+    }
+
+
+
+</div>
+<div id="printThis" class="fa-democrat twelve columns">
+    <div class="modal inmodal fade" id="dlgGuia" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header pt-3 pb-1">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Guía de Transportista</h4>
+                </div>
+                <div class="modal-body" style="background-color:white;">
+                    @{
+
+                        if (Session["OrderSelected"] != null)
+                        {
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OrderSelected"];
+                            var dt = ds.Tables[0];
+                            var dt8 = ds.Tables[6];
+                            var dt4 = ds.Tables[3];
+                            var dt2 = ds.Tables[5];  //no surtidos
+                            var dt3 = ds.Tables[4];  //surtidos
+
+                            int index = 0;
+                            foreach (System.Data.DataRow p in dt.Rows)
+                            {
+                                <input type="hidden" id="hddFecAsigTrans" value="@p["carrierDate"]" />
+                                <div id="divGuia">
+                                    <div class="col">
+                                        <div class="col-sm-2 col-md-2 col-lg-2">
+                                            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " id="btnPrint" style="padding-bottom: 4px;margin-bottom: 10px;margin-top: 2px;">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                            @*<span class="label label-success" onclick="imprimir()"><i class="fa fa-print"></i></span>*@
+                                        </div>
+                                    </div>
+                                    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                        <tr>
+                                            <td>
+                                                <table border="0" cellpadding="0" style="width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="text-align:center;font-weight:bold;background-color:#eee">Guía</th>
+                                                            <th style="text-align:center;font-weight:bold;background-color:#eee">Chofer</th>
+                                                            <th style="text-align:center;font-weight:bold;background-color:#eee">Fecha de Asignación</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <p style="text-align:center" id="txtGuia">@p["TrackingNo"]</p>
+                                                            </td>
+                                                            <td>
+                                                                <p style="text-align:center" id="txtChofer">@p["ShipperName"]</p>
+                                                            </td>
+                                                            <td>
+                                                                <p style="text-align:center" id="txtFecAsig">@p["CarrierDate"]</p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table border="0" cellpadding="0" style="width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="text-align:center;font-weight:bold;background-color:#eee">Orden</th>
+                                                            <th style="text-align:center;font-weight:bold;background-color:#eee">Entrega</th>
+                                                            <th style="text-align:center;font-weight:bold;background-color:#eee"> Dirección de Entrega</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>                                                              
+                                                                <p style="text-align:center" id="txtNoOrden">@p["OrderNo"]</p>
+                                                            </td>
+                                                            <td>                                                                
+                                                                <p style="text-align:center" id="txtFecEntrega">@p["OrderDeliveryDate"]</p>
+                                                            </td>
+                                                            <td>                                                               
+                                                                <p style="text-align:center" id="txtDireccion">@p["DeliveryAddress"]</p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                                    <tr>
+                                                        <TD ALIGN='CENTER' bgcolor="#eee"><B>Forma de pago</B></TD>
+                                                        @*' 1.-Credito, 2.-Bonomatic, 3.-Cheque, 8.-CheckPlus*@
+                                                        @if (@p["MethodPaymentID"].ToString().Trim() == "1" || @p["MethodPaymentID"].ToString().Trim() == "2" || @p["MethodPaymentID"].ToString().Trim() == "8")
+                                                        {
+                                                            <TD ALIGN='CENTER' bgcolor="#eee"><B>Cuenta</B></TD>
+                                                        }
+                                                        @*' 1.-Credito, 2.-Bonomatic, 3.-Cheque, 8.-CheckPlus*@
+                                                        @if (@p["MethodPaymentID"].ToString() == "1")
+                                                        {
+                                                            <TD ALIGN='CENTER' bgcolor="#eee"><B>Nombre Cliente Tarjeta</B></TD>
+                                                            <TD ALIGN='CENTER' bgcolor="#eee"><B>Expira (MMAA)</B></TD>
+                                                            <TD ALIGN='CENTER' bgcolor="#eee"><B>Banco</B></TD>
+
+                                                            if (@p["Codigo_Autorizacion"].ToString().Trim() != "0")
+                                                            {
+                                                                <TD ALIGN='CENTER' bgcolor="#eee"><B>Autorizaci&oacute;n</B></TD>
+                                                            }
+                                                            if (@p["NumeroAfiliacion"].ToString().Trim() != "0")
+                                                            {
+                                                                <TD ALIGN='CENTER' bgcolor="#eee"><B>N&uacute;mero de Afiliaci&oacute;n</B></TD>
+                                                            }
+                                                        }
+                                                        @if (@p["MethodPaymentID"].ToString() == "2" || @p["MethodPaymentID"].ToString() == "5" || @p["MethodPaymentID"].ToString() == "6")
+                                                        {
+                                                            <TD ALIGN='CENTER' bgcolor="#eee">&nbsp;</TD>
+                                                        }
+                                                        @if (@p["MethodPaymentID"].ToString() == "3")
+                                                        {
+                                                            if (@p["cuenta"] != null)
+                                                            {
+                                                                if (@p["cuenta"].ToString().Trim().Length > 0)
+                                                                {
+                                                                    if (@p["cuenta"].ToString().Substring(0, 7) == "20000000")
+                                                                    {
+                                                                        <TD ALIGN='CENTER' bgcolor="#eee"><B>Cuenta cliente frecuente</B></TD>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </tr>
+                                                    <tr>
+                                                        <TD ALIGN=CENTER>@p["MethodPayment"].ToString().Trim()</TD>
+                                                        @if (@p["MethodPaymentID"].ToString().Trim() == "1" || @p["MethodPaymentID"].ToString().Trim() == "2" || @p["MethodPaymentID"].ToString().Trim() == "8")
+                                                        {
+                                                            <TD ALIGN='CENTER'>@p["Cta"].ToString().Trim()</TD>
+                                                        }
+                                                        @if (@p["MethodPaymentID"].ToString() == "1")
+                                                        {
+                                                            <TD ALIGN='CENTER'>@p["CustomerName"]</TD>
+                                                            <TD ALIGN='CENTER'>@p["Vec"]</TD>
+                                                            <TD ALIGN='CENTER'>@p["Banco"]</TD>
+                                                            if (@p["Codigo_Autorizacion"].ToString().Trim() != "0")
+                                                            {
+                                                                <TD ALIGN='CENTER'>@p["Codigo_Autorizacion"]</TD>
+                                                            }
+                                                            if (@p["NumeroAfiliacion"].ToString().Trim() != "0")
+                                                            {
+                                                                <TD ALIGN='CENTER'>@p["NumeroAfiliacion"]</TD>
+                                                            }
+                                                        }
+                                                        @if (@p["MethodPaymentID"].ToString() == "2" || @p["MethodPaymentID"].ToString() == "5" || @p["MethodPaymentID"].ToString() == "6")
+                                                        {
+                                                            <TD ALIGN='CENTER'><p>Efectivo: $@p["CashPay"].ToString() -- Vales:  $@p["VouchersPay"].ToString() </p></TD>
+                                                        }
+                                                        @if (@p["MethodPaymentID"].ToString() == "3")
+                                                        {
+                                                            if (@p["cuenta"] != null)
+                                                            {
+                                                                if (@p["cuenta"].ToString().Trim().Length > 0)
+                                                                {
+                                                                    if (@p["cuenta"].ToString().Substring(0, 7) == "20000000")
+                                                                    {
+                                                                        <TD ALIGN='CENTER'>@p["cuenta"].ToString().Trim()</TD>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><hr /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table border="0" cellpadding="0" style="width:100%;">
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>Importe total de la orden:</b>
+                                                        </td>
+                                                        <td style="text-align:left;padding-left:20px;">$@dt8.Rows[0]["TotPOS"]  </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>
+                                                                Bolsas:
+                                                            </b>
+                                                        </td>
+                                                        <td style="text-align:left;padding-left:20px;">
+                                                            @dt4.Rows[0]["NumBags"]
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>
+                                                                Contenedores:
+                                                            </b>
+                                                        </td>
+                                                        <td style="text-align:left;padding-left:20px;">
+                                                            @dt4.Rows[0]["NumContainers"]
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>
+                                                                Hieleras:
+                                                            </b>
+                                                        </td>
+                                                        <td style="text-align:left;padding-left:20px;">
+                                                            @dt4.Rows[0]["NumCoolers"]
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>
+                                                                Terminal Portatil:
+                                                            </b>
+                                                        </td>
+                                                        <td style="text-align:left;vertical-align:middle;padding-left:20px;">
+                                                            @if (@dt4.Rows[0]["Terminal"].ToString().Trim().ToLower().Equals("0"))
+                                                            {
+                                                                <input style="text-align:center" type="checkbox" readonly id="chTerminal" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input style="text-align:center" type="checkbox" checked readonly id="chTerminal" />
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>
+                                                                Cliente:
+                                                            </b>
+                                                        </td>
+                                                        <td style="text-align:left;padding-left:20px;">
+                                                            @p["CustomerName"]
+                                                        </td>
+                                                    </tr>
+                                                    @if (@p["NomCteEnt"].ToString().Length != 0)
+                                                    {
+                                                    <tr>
+                                                        <td style="width:20%;text-align:right;">
+                                                            <b>Persona autorizada a recibir la mercanc&iacute;a:</b>
+                                                        </td>
+                                                        <td style="text-align:left;padding-left:20px;">
+                                                            @p["NomCteEnt"]
+                                                        </td>
+                                                    </tr>
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table id="tblArtNoSurt" class="table invoice-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <td colspan="6">
+                                                                <b><b>Artículos NO surtidos</b></b>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="text-align: center;vertical-align:middle;background-color:#eee;">Num</td>
+                                                            <td style="text-align: center;background-color:#eee;">SKU/<br />Código</td>
+                                                            <td style="text-align: center;background-color:#eee;">Descripción</td>
+                                                            <td style="text-align: center;background-color:#eee;"><b>Cantidad</b><br>Pedida<br>Surtida<br>Cobrada</td>
+                                                            <td style="text-align: center;background-color:#eee;"><b>Precio</b><br>Normal<br>Oferta<br>Cobrado</td>
+                                                            <td style="text-align: center;background-color:#eee;"><b>Total</b><br>Pedido<br>Surtido<br>Cobrado</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @foreach (System.Data.DataRow p2 in dt2.Rows)
+                                                        {
+                                                            <tr>
+                                                                <td style="text-align:center;">@p2["OrderNo"]</td>
+                                                                <td style="text-align:left;padding-right:10px;">@p2["ProductId"] / @p2["Barcode"]</td>
+                                                                <td style="text-align:left;padding-right:10px;">@p2["ProductName"]</td>
+                                                                <td style="text-align:right;padding-right:10px;">@p2["pe_Quantity"] @p2["UnitMeasure"]<br />@p2["e_Quantity"] @p2["UnitMeasure"]<br />@p2["c_Quantity"] @p2["UnitMeasure"]</td>
+                                                                <td style="text-align:right;padding-right:10px;">$@p2["pe_price"]<br />$@p2["e_price"]<br />$@p2["c_price"]</td>
+                                                                <td style="text-align:right;padding-right:10px;">$@p2["pe_tot"]<br />$@p2["e_tot"]<br />$@p2["c_tot"]</td>
+
+                                                            </tr>
+
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><div style="page-break-after: always;"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table id="tblArtSurt" class="table invoice-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <td colspan="6">
+                                                                <b><b>Artículos Surtidos</b></b>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="text-align: center;vertical-align:middle;background-color:#eee;">Num</td>
+                                                            <td style="text-align: center;background-color:#eee;">SKU/<br />Código</td>
+                                                            <td style="text-align: center;background-color:#eee;">Descripción</td>
+                                                            <td style="text-align: center;background-color:#eee;"><b>Cantidad</b><br>Pedida<br>Surtida<br>Cobrada</td>
+                                                            <td style="text-align: center;background-color:#eee;"><b>Precio</b><br>Normal<br>Oferta<br>Cobrado</td>
+                                                            <td style="text-align: center;background-color:#eee;"><b>Total</b><br>Pedido<br>Surtido<br>Cobrado</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @foreach (System.Data.DataRow p2 in dt3.Rows)
+                                                        {
+                                                            <tr>
+                                                                <td style="text-align:center;">@p2["OrderNo"]</td>
+                                                                <td style="text-align:left;padding-right:10px;">@p2["ProductId"] / @p2["Barcode"]</td>
+                                                                <td style="text-align:left;padding-right:10px;">@p2["ProductName"]</td>
+                                                                <td style="text-align:right;padding-right:10px;">@p2["pe_Quantity"] @p2["UnitMeasure"]<br />@p2["e_Quantity"] @p2["UnitMeasure"]<br />@p2["c_Quantity"] @p2["UnitMeasure"]</td>
+                                                                <td style="text-align:right;padding-right:10px;">$@p2["pe_price"]<br />$@p2["e_price"]<br />$@p2["c_price"]</td>
+                                                                <td style="text-align:right;padding-right:10px;">$@p2["pe_tot"]<br />$@p2["e_tot"]<br />$@p2["c_tot"]</td>
+
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                //FORMATO DE IMPRESION
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table border="01" width="80%" align="CENTER" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table border="0" width="100%" align="CENTER" cellspacing="02" cellpadding="0"><tbody><tr height="8"><td></td></tr><tr><td colspan="4"><table border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td width="10%"></td><td colspan="2" align="CENTER"><font face="verdana" size="2"><b>Recibí completa la mercancía</b></font></td></tr></tbody></table></td></tr><tr><td><br></td></tr><tr><td colspan="4"><table border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td width="10%"></td><td><font face="verdana" size="2">Nombre:</font></td><td align="RIGHT">_____________________________________________________________________________</td></tr></tbody></table></td></tr><tr><td><br></td></tr><tr><td colspan="4"><table border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td width="10%"></td><td><font face="verdana" size="2">No. identificación (Cred. Elector ó pasaporte):</font></td><td align="RIGHT">_____________________________________________</td></tr></tbody></table></td></tr><tr><td><br></td></tr><tr><td colspan="4"><table border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td width="10%"></td><td><font face="verdana" size="2">Firma:</font></td><td align="RIGHT">_______________________________________________________________________________</td></tr></tbody></table></td></tr><tr><td><br></td></tr><tr><td colspan="4"><table border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td width="10%"></td><td><font face="verdana" size="2">Fecha y hora:</font></td><td align="RIGHT">________________________________________________________________________</td></tr></tbody></table></td></tr></tbody></table><br><table border="01" width="80%" align="CENTER" cellspacing="0" cellpadding="0"><tbody><tr><td><table border="0" width="100%" align="CENTER" cellspacing="02" cellpadding="0"><tbody><tr><td colspan="3" align="CENTER"><font face="verdana" size="1">PARA USO DEL PERSONAL DE SORIANA</font></td></tr><tr><td><br><br></td></tr><tr><td align="CENTER"><font face="verdana" size="2">_______________________________<br>Guía recibida por el chofer<br>Nombre y firma</font></td><td width="20%"></td><td align="CENTER"><font face="verdana" size="2">_______________________________<br>Recibió guia del chofer<br>Nombre y firma</font></td></tr></tbody></table></td></tr></tbody></table><br><br>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                    @*<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="PrintDiv();">Imprimir</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script src="~/Content/plugins/clockpicker/dist/bootstrap-clockpicker.min.js"></script>
+    <link href="~/Content/Inspinia/Styles/datapicker/datepicker3.css" rel="stylesheet" />
+    <script src="~/Content/Inspinia/plugins/datapicker/bootstrap-datepicker.js"></script>
+
+
+    <link href="~/Content/PrintModal.css" rel="stylesheet" />
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/slimScroll")
+    <script type="text/javascript">
+
+        document.getElementById("btnPrint").onclick = function () {
+
+            //$('.demo').printThis({
+            //    importCSS: false, // import page CSS
+            //    printContainer: true, // grab outer container as well as the contents of the selector
+            //    pageTitle: '', // add title to print page
+            //    removeInline: false, // remove all inline styles from print elements
+            //    debug: true
+            //});
+
+            printElement(document.getElementById("printThis"));
+        }
+
+        function printElement(elem) {
+            var domClone = elem.cloneNode(true);
+
+            var $printSection = document.getElementById("printSection");
+
+            if (!$printSection) {
+                var $printSection = document.createElement("div");
+                $printSection.id = "printSection";
+                document.body.appendChild($printSection);
+            }
+
+            $printSection.innerHTML = "";
+            $printSection.appendChild(domClone);
+            window.print();
+        }
+
+
+        $('.input-group.date').datepicker({
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            //locale: 'es'
+             format: "m/dd/yyyy"
+            //format: "dd/MM/yyyy"
+            //format: 'HH:mm'
+        })
+
+
+        $('.clockpicker').clockpicker({
+
+            donetext: 'Done'
+        })
+	        .find('input').change(function () {
+	            console.log(this.value);
+	        });
+
+        $(document).ready(function () {
+            //GetSuetidores();
+            //$('.clockpicker').clockpicker();
+
+
+
+            var values = [];
+
+            $(".cbx").click(function () {
+                values = [];
+                $(".cbx").each(function () {
+                    if ($(this).is(":checked"))
+                        values.push($(this).val());
+                });
+
+                document.getElementById("Orders").value = values;
+                //alert(values);
+            });
+
+            window.setInterval(function () {
+                var date = new Date();
+                //alert(date.getMinutes());
+                if ((date.getMinutes() % 5) == 0) {
+
+                    location.reload();
+                }
+            }, 60000);
+
+        });
+
+
+        function consulta() {
+
+            debugger;
+
+        }
+
+        function onchangeDropTrans(el) {
+
+            debugger;
+            var id_categoria = $(el).attr('id');
+
+            if (confirm('Seguro que desea signar el transportista a los pedidos seleccionados?')) {
+                //$('#ConfirmMessageResponse').val('Yes');
+
+
+                FinalizaEmbarque(id_categoria);
+
+
+            } else {
+                //$('#ConfirmMessageResponse').val('No');
+                return false;
+            }
+
+
+        }
+
+
+        function FinalizaEmbarque2() {
+
+            var _nombre = $("#nombre").val();
+            var _comentarios = $("#comentarios").val();
+            var _timeD = $("#timeD").val();
+            var _fechaE = $("#fechaE").val();
+            if (_nombre.length == 0) {
+                $("#nombre").focus();
+                return;
+            }
+
+            if (_fechaE.length == 0) {
+                $("#fechaE").focus();
+                return;
+            }
+
+            if (_timeD.length == 0) {
+                $("#timeD").focus();
+                return;
+            }
+
+            if (_comentarios.length == 0) {
+                $("#comentarios").focus();
+                return;
+            }
+
+
+
+            var radioValue = $("input[name='optionsRadios']:checked").val();
+            if (radioValue) {
+                //alert("Your are a - " + radioValue);
+
+                var _fecAsigTrans = $("#hddFecAsigTrans").val();
+                var listaO = document.getElementById("OrderNo").value;
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: '@Url.Action("FinalizarEntrega", "Ordenes")',
+                    data: {
+                        OrderNo: listaO,
+                        trans: document.getElementById("ShipperName").value,
+                        ide: document.getElementById("nombre").value,
+                        fechaD: document.getElementById("fechaE").value,
+                        comments: document.getElementById("comentarios").value,
+                        flagE: radioValue,
+                        timeD: document.getElementById("timeD").value
+                        ,fecAsigTrans: _fecAsigTrans
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                        if (json.Success) {
+                            //location.reload();
+                            //window.location.href = '@Url.Content("~/ordenes/OrdenSeleccionada")';
+                        } else {
+                            alert(json.Message);
+                        }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+
+                    }
+                });
+
+            }
+
+        }
+
+
+        function FinalizaEmbarque() {
+
+            debugger;
+
+
+
+            var listaO = document.getElementById("Orders").value;
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("FinalizarTransportista", "Ordenes")',
+                data: {
+                    OrderNo: listaO,
+                    trans: tran
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+
+                        //location.reload();
+
+                        return false;
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+
+        }
+
+
+
+        function ShowFilter() {
+            $("#filter").collapse('toggle');
+        };
+    </script>
+}
+
+
+
+
+
+
+

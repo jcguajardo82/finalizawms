@@ -1,0 +1,62 @@
+﻿<div class="modal inmodal fade" id="dlgActualizaMp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header pt-3 pb-1">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <p>Actualizar Forma de Pago</p>
+            </div>
+            <div class="modal-body">
+               <div class="row">
+                   <p><h4>Orden:</h4></p><p ><h4 class="text-navy" id="lblOrdenObsFP"></h4></p><br />
+               </div>
+                <form id="frmCreateServicios">
+                    <table style="width:100%">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input checked type="radio" name="TipoFormaPago" value="5">
+                                </td>
+                                <td><font face="verdana" size="2">Efectivo</font></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" name="TipoFormaPago" value="6">
+                                </td>
+                                <td><font face="verdana" size="2">Vales</font></td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" name="TipoFormaPago" value="21"></td>
+                                <td><font face="verdana" size="2">Tarjeta de crédito contra entrega</font></td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" name="TipoFormaPago" value="22"></td>
+                                <td><font face="verdana" size="2">Tarjeta de débito contra entrega</font></td>
+                            </tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td colspan="2">
+                                    <font face="verdana" size="2">Motivo de cambio:</font>&nbsp;
+
+                                    <select class="form-control m-b" id="ddlMotivoCFP"></select>
+                                </td>
+                            </tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td colspan="2">
+                                    <font face="verdana" size="2">Observación: </font><br>
+
+                                    <textarea class="form-control m-b" id="txtObs_CambioFP" rows="6" maxlength="255"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id=" btnActualizaMp" onclick="ActualizaMP()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>

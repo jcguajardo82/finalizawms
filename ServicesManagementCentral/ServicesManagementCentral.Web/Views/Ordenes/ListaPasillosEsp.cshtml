@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Orden";
+    Layout = "~/Views/Shared/Empty.cshtml";
+}
+<style>
+    body {
+        font: normal 14px Arial, sans-serif;
+    }
+
+    .UlArt {
+        display: flex;
+        list-style-type: none;
+        margin: 0px;
+        padding: 0px;
+    }
+
+        .UlArt li {
+            flex-basis: 120px;
+            padding: 10px;
+        }
+
+            .UlArt li + li {
+                flex-basis: 380px;
+            }
+
+                .UlArt li + li + li {
+                    flex-basis: 80px;
+                    text-align: right;
+                }
+</style>
+<div class="wrapper wrapper-content animated fadeInRight" style="padding-top: 0px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox-content p-xl" style="padding-top: 0px;padding-bottom: 0px;">
+                <br />
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        @if (Session["OrderPasillos"] != null)
+                        {
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OrderPasillos"];
+                            var dtOrden = ds.Tables[0];
+                            var dtObserv = ds.Tables[1];
+                            var dtArt = ds.Tables[2];
+                            var dtComents = ds.Tables[3];
+                            var index = 1;
+                            var numeroPasillo = -1;
+                            //================ENCABEZADO DE LA ORDEN ===================================
+                            <ul style="display:flex;flex-wrap:wrap;list-style-type:none;margin:0px;padding:0px;">
+
+                                @foreach (System.Data.DataRow p in dtOrden.Rows)
+                                {
+
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Orden<br><span style="font-size:1.3em;">@p["OrderNo"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Sucursal<br><span style="font-size:1.3em;">@p["StoreNum"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">
+                                        Creación<br><span style="font-size:1.3em;">@p["OrderDate"]</span>
+                                    </li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Entrega<br><span style="font-size:1.3em;">@p["OrderDeliveryDate"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Servicio<br><span style="font-size:1.3em;">@p["DeliveryType"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Surtidor<br><span style="font-size:1.3em;">@p["Supplier_Name"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Forma de Pago<br><span style="font-size:1.3em;">@p["MethodPayment"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Origen<br><span style="font-size:1.3em;">@p["CreatedBy"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Nombre del cliente<br><span style="font-size:1.3em;"> @p["Address1"] @p["Address2"] @p["City"] @p["StateCode"] @p["PostalCode"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Dirección del cliente<br><span style="font-size:1.3em;">@p["Phone"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Teléfono<br><span style="font-size:1.3em;">@p["Phone"] </span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Extensión<br><span style="font-size:1.3em;">          </span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Recibe<br><span style="font-size:1.3em;">@p["NameReceive"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Dirección de entrega<br><span style="font-size:1.3em;">@p["DeliveryAddress"]</span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Teléfono<br><span style="font-size:1.3em;"></span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Extensión<br><span style="font-size:1.3em;">          </span></li>
+                                    <li style="padding:5px;border:1px solid gray;margin:5px;font-size:0.8em;">Total<br><span style="font-size:1.3em;">$@p["Total"]</span></li>
+                                }
+                            </ul>
+                            //================OBSERVACIONES DE LA ORDEN ===================================
+                            <ul style="list-style-type:none;margin:0px;padding:0px;font-size:1.2em;margin-top:20px;">
+                                <li style="margin:10px;"><b>Lista de observaciones:</b></li>
+
+                                @foreach (System.Data.DataRow p in dtObserv.Rows)
+                                {
+                                    <li style="margin:15px;border-bottom:1px solid gray;padding-bottom:3px;">
+                                        @string.Format("{0}.- {1}", index, @p["OrderComments"])
+                                    </li>
+                                    index++;
+                                }
+                            </ul>
+
+                            //================ARTICULOS ===================================
+
+                            <div>
+
+                                @foreach (System.Data.DataRow p in dtArt.Rows)
+                                {
+
+                                    if (@p["Id_Cnsc_Pasillo"].ToString() != numeroPasillo.ToString())
+                                    {
+                                        <div style=font-size:1.5em;border-top:1px dashed gray;margin-top:40px;padding-top:40px;">@p["Nom_Pasillo"]</div>
+                                        <ul style="display:flex;list-style-type:none;margin:20px 0 20px 40px;padding:0px;">
+                                            <li style="border:1px solid gray;padding:20px;">
+                                                @p["OrderNo"]
+                                            </li>
+                                            <li style="border:1px solid gray;padding:20px;">
+                                                @ds.Tables[0].Rows[0]["Supplier_Name"].ToString();
+                                            </li>
+                                        </ul>
+
+                                        <ul class="UlArt" style="border-bottom:1px solid gray;"><li>Código</li><li>Descripción</li><li>Cantidad</li></ul>
+                                    }
+
+                                    numeroPasillo = int.Parse(@p["Id_Cnsc_Pasillo"].ToString());
+
+
+                                    <ul class="UlArt">
+                                        <li style="">@p["BarCode"] </li>
+                                        <li style="">
+                                            @p["Descripcion"]
+                                                                                        
+
+                                                @foreach (System.Data.DataRow row in dtComents.Select("BarCode= " + @p["Barcode"]))
+                                                {
+                                                    if (@row["Id_Cnsc_ArtCar_Obser"].ToString() == "100" || @row["Id_Cnsc_ArtCar_Obser"].ToString() == "101")
+                                                    {
+                                                        <ul style="font-weight:bold;">-@row["Desc_ArtCarObser"]</ul>
+                                                    }
+                                                    else
+                                                    {
+                                                        <ul> -@row["Desc_ArtCarObser"]</ul>
+
+                                                    }
+                                                }
+                                            
+                                        </li>
+                                        <li style=""> @p["CantidadPedida"]  @p["UnidadVentaPedida"] </li>
+                                    </ul>
+
+                                }
+
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

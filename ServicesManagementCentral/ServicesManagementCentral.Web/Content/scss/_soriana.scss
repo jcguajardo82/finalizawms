@@ -1,0 +1,64 @@
+﻿@import "./_variables.scss";
+
+body {
+    background-color: $red;
+}
+
+.navbar-fixed-top, .navbar-static-top {
+    background-color: $green;
+
+    .text-muted,
+    .nav.navbar-right > li > a {
+        color: $white !important;
+    }
+
+    .nav.navbar-right > li > a:hover {
+        color: $white;
+        text-decoration: underline;
+    }
+}
+
+.nav-header {
+    background-color: $red;
+    color: $white;
+
+    .text-muted {
+        color: $white !important;
+    }
+}
+
+.navbar-default {
+    background-color: $red;
+    color: $white;
+
+
+    * {
+        background-color: $red;
+        color: $white;
+    }
+
+    .logo {
+        width: 150px;
+        border-radius: unset;
+    }
+
+    .nav.metismenu > li a,
+    ul .nav-second-level > li a {
+        background-color: $red;
+        color: $white;
+    }
+
+    .nav.metismenu > li a:hover,
+    ul .nav-second-level > li a:hover {
+        background-color: $red;
+        color: $white;
+        text-decoration: underline;
+    }
+}
+
+
+
+.btn-primary {
+    background-color: $red;
+    border-color: $red;
+}

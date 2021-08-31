@@ -1,0 +1,81 @@
+﻿
+.modal-full .modal-dialog {
+    width: 90%;
+}
+
+@media screen {
+    #printSection {
+        display: none;
+    }
+}
+
+@media print {
+
+    .modal-dialog {
+        /*height: auto !important;
+        width: auto !important;*/
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+    }
+
+    .modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
+        min-height: 550px;
+        visibility: visible;
+        /**Remove scrollbar for printing.**/
+        overflow: visible !important;
+    }
+
+    .modal-backdrop {
+        background-color: white;
+        opacity: 1 !important;
+    }
+
+
+    body * {
+        visibility: hidden;
+    }
+
+
+
+    #print-content * {
+        visibility: visible;
+        overflow: visible;
+    }
+
+    #mainPage * {
+        display: none;
+    }
+
+
+    #printSection, #printSection * {
+        visibility: visible;
+    }
+
+    #printSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 595px;
+        height: 842px;
+        overflow: visible !important;
+         height: 100%;
+        width: 100%;
+    }
+
+    .pagebreak {
+        page-break-before: always;
+    }
+       
+  
+}
+
+/*@page {
+  size: auto;
+  margin: 20mm;
+}*/

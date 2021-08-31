@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Password para Cancelar";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>@ViewBag.Title </h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/CPanel/Index">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Catalogo</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Password para Cancelar Ordenes</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="row mt-2 mb-3">
+    <div class="col-12">
+        <div id="filter">
+            <div class="card card-body">
+                <form id="frmFilter">
+                    <div class="row">
+                        <div class="col col-xs-12 col-md-4">
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="text" placeholder="Password" value="@ViewBag.pass" name="txtPassCan" id="txtPassCan" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col col-xs-2 col-md-2 text-left">
+                            <button class="btn btn-primary mt-4 " type="button" onclick="SavePassCan();"><i class="fa fa-save"></i>&nbsp;&nbsp;<span class="bold">Actualizar</span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetPassCan();
+        });
+
+        function ShowFilter() {
+            $("#filter").collapse('toggle');
+        };
+
+        function GetPassCan()
+        {
+
+            debugger;
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: '@Url.Action("GetPassCan", "Catalogo")',
+                data: {
+                    //  Id_Num_UN: _Id_Num_UN
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+
+
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    bootbox.alert(errorThrown);
+
+                }
+            });
+        }
+
+        function SavePassCan()
+        {
+
+            var _PassCan = $("#txtPassCan").val();
+
+            debugger;
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("UpdatePassCancel", "Catalogo")',
+                data: {
+                      PassCan: _PassCan
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+
+
+                    } 
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+        }
+    </script>
+}
+

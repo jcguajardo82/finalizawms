@@ -1,0 +1,112 @@
+﻿
+<div class="modal inmodal fade" id="dlgReportes" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header pt-3 pb-1">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Reportes</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmCreateServicios">
+                    <div class="row">
+                        <div class="col col-xs-12 col-md-12">
+                            <div class="tabs-container">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li id="rptDiario"><a class="nav-link active" data-toggle="tab" href="#tab-1"> Venta por día</a></li>
+                                    <li id="rptRangoFec"><a class="nav-link" data-toggle="tab" href="#tab-2">Ventas por rango de fechas</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div role="tabpanel" id="tab-1" class="tab-pane active">
+                                        <div class="panel-body">
+
+                                            <div class="col-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label>Fecha</label>
+                                                    <div class="input-group date" id="datetimepicker1">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                        <input class="form-control datepicker" id="txtFecRptDia" name="txtFecRptDia"
+                                                              type="text" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding-top:20px;">
+                                                <div class="col col-xs-12 col-md-12 col-lg-12">
+                                                    <button type="button" class="btn btn-primary float-right" onclick="ReporteDiario()">Generar Reporte</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div role="tabpanel" id="tab-2" class="tab-pane">
+                                        <div class="panel-body">
+                                            <div class="form-group" id="data_5">
+                                                <label class="font-normal">Selecciona el rango de fechas</label>
+                                                @*<div class="input-daterange input-group" id="datepicker">
+            <input type="text" class="form-control-sm form-control" id="txtFecIni">
+            <span class="input-group-addon">to</span>
+            <input type="text" class="form-control-sm form-control" id="txtFecFin">
+        </div>*@
+
+                                                <div class="input-group date" id="datetimepicker2">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input class="form-control datepicker" id="txtFecIni" name="txtFecIni"
+                                                           type="text" value="INicio">
+                                                </div>
+                                                <div class="input-group date" id="datetimepicker3">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input class="form-control datepicker" id="txtFecFin" name="txtFecFin"
+                                                           type="text" value="Fin">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-xs-12 col-md-12 col-lg-12">
+                                                    <ul class="list-group list-group-flush">
+                                                        <li class="list-group-item">
+                                                            <!-- Default checked -->
+                                                            <input type="checkbox" id="chEntregadas">
+                                                            <label for="check1">Entregadas</label>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <!-- Default checked -->
+                                                            <input type="checkbox" id="chCanceladas">
+                                                            <label for="check2">Canceladas</label>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <!-- Default checked -->
+                                                            <input type="checkbox" id="chTransito">
+                                                            <label for="check3">En transito</label>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <!-- Default checked -->
+                                                            <input type="checkbox" id="chPenSur">
+                                                            <label for="check4">Pendientes de Surtir</label>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <!-- Default checked -->
+                                                            <input type="checkbox" id="chPenEnt">
+                                                            <label for="check5">Pendientes de entregar</label>
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+                                            </div>
+                                            <div class="row" style="padding-top:20px;">
+                                                <div class="col col-xs-12 col-md-12 col-lg-12">
+                                                    <button type="button" class="btn btn-primary float-right" onclick="RptRangoFec()">Generar Reporte</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,429 @@
+﻿@{
+    ViewBag.Title = "Orden";
+    Layout = "~/Views/Shared/Empty.cshtml";
+}
+
+
+
+
+<div class="wrapper wrapper-content animated fadeInRight" style="padding-top: 0px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox-content p-xl" style="padding-top: 0px;padding-bottom: 0px;">
+                <br />
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td colspan="5" align="center">
+                                <font face="verdana" size="2"><b>Reporte diario de ventas SORIANA.COM<br>del @ViewBag.fecIni<br>@ViewBag.fecFin</b></font>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    @*===============================ORDENES ENTREGADAS==================================*@
+                    @{
+                        int index = 0;
+                        decimal total = 0;
+                        decimal vltotalP = 0;
+                        decimal vltotalC = 0;
+                        decimal vlst1 = 0;
+                        decimal vlst2 = 0;
+                        decimal vlst3 = 0;
+                        decimal vlst4 = 0;
+                        decimal vlst5 = 0;
+
+                        if (Session["OEntregadasRng"] != null)
+                        {
+
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OEntregadasRng"];
+                            System.Data.DataTable dsImp = new System.Data.DataTable();
+
+
+                            var dt = ds.Tables[0];
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <table width="100%" border="01" cellspacing="0" cellpadding="0">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="7" align="center">
+                                                <font face="verdana" size="2">
+                                                    <b>ORDENES ENTREGADAS</b>
+                                                </font>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td width="08%" align="center">
+                                                <font face="verdana" size="2"><b>Orden</b></font>
+                                            </td>
+                                            <td width="20%" align="center"><font face="verdana" size="2"><b>Cliente</b></font></td>
+                                            <td width="15%" align="center"><font face="verdana" size="2"><b>Aplicación</b></font></td>
+                                            <td width="15%" align="center"><font face="verdana" size="2"><b>Entregada</b></font></td>
+                                            <td width="15%" align="center"><font face="verdana" size="2"><b>Forma de pago</b></font></td>
+                                            <td width="13%" align="center"><font face="verdana" size="2"><b>Importe</b></font><br><font face="verdana" size="2">PEDIDO</font><br></td>
+                                            <td width="13%" align="center"><font face="verdana" size="2"><b>Importe</b></font><br><font face="verdana" size="2">SURTIDO</font></td>
+                                        </tr>
+
+
+                                        @foreach (System.Data.DataRow p in dt.Rows)
+                                        {
+
+                                            <tr>
+
+
+                                                <td style="text-align:right;padding-right:10px;">@p["Orden"]</td>
+                                                <td style="padding-left:10px;">@p["Cliente"]</td>
+                                                <td style="text-align:center;">@p["DA"]</td>
+                                                <td style="text-align:center;">@p["Entregada"]</td>
+                                                <td style="text-align:center;">@p["Desc_FormaPago"]</td>
+
+                                                @foreach (System.Data.DataRow item in DALServicesM.GetImportesOEntr(2, DateTime.Now.ToString("yyyy/MM/dd"), DateTime.Now.ToString("yyyy/MM/dd")
+                                               , int.Parse(p["Orden"].ToString()), int.Parse(Session["Id_Num_UN"].ToString())
+                                               , int.Parse(p["ID_Num_FormaPago"].ToString())).Rows)
+                                                {
+
+                                                    <td style="text-align:right;padding-right:10px;">$@item["ImportePedido"]</td>
+                                                    <td style="text-align:right;padding-right:10px;">$@item["ImporteSurtido"]</td>
+                                                    vltotalP = vltotalP + (decimal)@item["ImportePedido"];
+                                                    vltotalC = vltotalC + (decimal)@item["ImporteSurtido"];
+                                                    vlst1 = vlst1 + (decimal)@item["vlst1"];
+                                                    vlst2 = vlst2 + (decimal)@item["vlst2"];
+                                                    vlst3 = vlst3 + (decimal)@item["vlst3"];
+                                                    vlst4 = vlst4 + (decimal)@item["vlst4"];
+                                                    vlst5 = vlst5 + (decimal)@item["vlst5"];
+
+                                                }
+                                            </tr>
+                                            index++;
+                                        }
+
+                                    </tbody>
+
+                                    <tfoot style="border:none;">
+                                        <tr>
+                                            <td style="border-right:0;" colspan="4" align="left"><font face="verdana" size="2"><b>@index orden(es).</b></font></td>
+                                            <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>TOTALES:</b></font></td>
+                                            <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vltotalP</b></font></td>
+                                            <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vltotalC</b></font></td>
+                                        </tr>
+                                        @if (@vlst1 > 0)
+                                        {
+                                            <tr>
+                                                <td style="border-right:0;" colspan="4" align="left"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>Subtotal tarjeta de cr&eacute;dito:</b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vlst1</b></font></td>
+                                            </tr>
+                                        }
+                                        @if (@vlst2 > 0)
+                                        {
+                                            <tr>
+                                                <td style="border-right:0;" colspan="4" align="left"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>Subtotal tarjeta bonomatic:</b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vlst2</b></font></td>
+                                            </tr>
+                                        }
+                                        @if (@vlst3 > 0)
+                                        {
+                                            <tr>
+                                                <td style="border-right:0;" colspan="4" align="left"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>Subtotal pago con cheque:</b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vlst3</b></font></td>
+                                            </tr>
+                                        }
+                                        @if (@vlst4 > 0)
+                                        {
+                                            <tr>
+                                                <td style="border-right:0;" colspan="4" align="left"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>Subtotal pago en tienda:</b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vlst4</b></font></td>
+                                            </tr>
+                                        }
+                                        @if (@vlst5 > 0)
+                                        {
+                                            <tr>
+                                                <td style="border-right:0;" colspan="4" align="left"><font face="verdana" size="2"><b></b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>Subtotal efectivo y vales:</b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$</b></font></td>
+                                                <td style="border-left:0;padding-right:10px;" align="right"><font face="verdana" size="2"><b>$@vlst5</b></font></td>
+                                            </tr>
+                                        }
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <br />
+                        } }
+                    @*===============================ORDENES CANCELADAS==================================*@
+                    @{
+                        if (Session["OCanceladasRng"] != null)
+                        {
+                            index = 0;
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OCanceladasRng"];
+
+                            var dt = ds.Tables[0];
+
+                            <table width="100%" border="01" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" align="center"><font face="verdana" size="2"><b>ORDENES CANCELADAS</b></font></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center"><font face="verdana" size="2"><b>Orden</b></font></td>
+                                        <td align="center"><font face="verdana" size="2"><b>Cliente</b></font></td>
+                                        <td align="center"><font face="verdana" size="2"><b>Correo</b></font></td>
+                                        <td align="center"><font face="verdana" size="2"><b>Fecha de<br>la orden</b></font></td>
+                                        <td align="center"><font face="verdana" size="2"><b>Fecha de<br>cancelación</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Motivo</b></font></td>
+                                    </tr>
+
+
+                                    @foreach (System.Data.DataRow p in dt.Rows)
+                                    {
+                                        <tr>
+                                            <td style="text-align:right;">@p["Orden"]</td>
+                                            <td>@p["CustomerName"]</td>
+                                            <td>@p["CustomerEmail"]</td>
+                                            <td style="text-align:center;">@p["Fecha"]</td>
+                                            <td style="text-align:center;">@p["FecCan"]</td>
+                                            <td style="text-align:center;">@p["Motivo"]</td>
+                                        </tr>
+                                        index++;
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td align="left" colspan="6"><font face="verdana" size="2"><b>@index orden(es).</b></font></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <br />
+                        }
+                    }
+
+
+                    @*===============================ORDENES EN TRANSITO==================================*@
+                    @{
+                        if (Session["OEnTransitoRng"] != null)
+                        {
+                            index = 0;
+                            total = 0;
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OEnTransitoRng"];
+
+                            var dt = ds.Tables[0];
+
+                            <table width="100%" border="01" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" align="center"><font face="verdana" size="2"><b>ORDENES EN TRANSITO</b></font></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="08%" align="center"><font face="verdana" size="2"><b>Orden</b></font></td>
+                                        <td width="22%" align="center"><font face="verdana" size="2"><b>Cliente</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Fecha de<br>la orden</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Compromiso<br>de entrega</b></font></td>
+                                        <td width="15%" align="center"><font face="verdana" size="2"><b>Importe</b></font></td>
+                                        <td width="15%" align="center"><font face="verdana" size="2"><b>Status</b></font></td>
+                                    </tr>
+                                    @foreach (System.Data.DataRow p in dt.Rows)
+                                    {
+                                        <tr>
+                                            <td>@p["Orden"]</td>
+                                            <td>@p["Cliente"]</td>
+                                            <td style="text-align:center;">@p["Fecha"]</td>
+                                            <td style="text-align:center;">@p["Compromiso"]</td>
+                                            <td style="text-align:right;">
+                                                @foreach (System.Data.DataRow item in DALServicesM.RepDiaSurtido(2, DateTime.Now.ToString("yyyy/MM/dd"), DateTime.Now.ToString("yyyy/MM/dd")
+                                               , int.Parse(p["Orden"].ToString()), int.Parse(Session["Id_Num_UN"].ToString())).Tables[0].Rows)
+                                                {
+
+                                                    if (item["TotalOfertaSurt"] == null)
+                                                    {
+                                                        if (item["TotalNormalSurt"] == null)
+                                                        {
+                                                            <font face=verdana size=2 color=#ff0000>Importe no<br>encontrado</font>
+                                                        }
+                                                        else
+                                                        {
+                                                            <font face=verdana size=2> @item["TotalNormalSurt"]</font>
+                                                            total = total + decimal.Parse(@item["TotalNormalSurt"].ToString());
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <font face=verdana size=2> @item["TotalOfertaSurt"]</font>
+                                                        total = total + decimal.Parse(@item["TotalOfertaSurt"].ToString());
+                                                    }
+
+                                                }
+                                            </td>
+                                            <td style="text-align:center;">@p["Status"]</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td align="left"><font face="verdana" size="2"><b>@index orden(es).</b></font></td>
+                                        <td align="right" colspan="3"></td>
+                                        <td align="right"><font face="verdana" size="2"><b>TOTAL: $@total</b></font></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        }
+
+                    }
+
+                    @*===============================ORDENES PENDIENTES DE ENTREGAR==================================*@
+                    @{
+                        if (Session["OPendientesEntRng"] != null)
+                        {
+                            index = 0;
+                            total = 0;
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OPendientesEntRng"];
+
+                            var dt = ds.Tables[0];
+
+                            <table width="100%" border="01" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" align="center"><font face="verdana" size="2"><b>ORDENES PENDIENTES DE ENTREGAR</b></font></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="08%" align="center"><font face="verdana" size="2"><b>Orden</b></font></td>
+                                        <td width="22%" align="center"><font face="verdana" size="2"><b>Cliente</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Fecha de<br>la orden</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Compromiso<br>de entrega</b></font></td>
+                                        <td width="15%" align="center"><font face="verdana" size="2"><b>Importe</b></font></td>
+                                        <td width="15%" align="center"><font face="verdana" size="2"><b>Status</b></font></td>
+                                    </tr>
+                                    @foreach (System.Data.DataRow p in dt.Rows)
+                                    {
+                                        <tr>
+                                            <td style="text-align:right;">@p["Orden"]</td>
+                                            <td>@p["Cliente"]</td>
+                                            <td style="text-align:center;">@p["Fecha"]</td>
+                                            <td style="text-align:center;">@p["Compromiso"]</td>
+                                            <td style="text-align:right;">
+                                                @foreach (System.Data.DataRow item in DALServicesM.RepDiaSurtido(2, DateTime.Now.ToString("yyyy/MM/dd"), DateTime.Now.ToString("yyyy/MM/dd")
+                                               , int.Parse(p["Orden"].ToString()), int.Parse(Session["Id_Num_UN"].ToString())).Tables[0].Rows)
+                                                {
+
+                                                    if (item["TotalOfertaSurt"] == null)
+                                                    {
+                                                        if (item["TotalNormalSurt"] == null)
+                                                        {
+                                                            <font face=verdana size=2 color=#ff0000>Importe no<br>encontrado</font>
+                                                        }
+                                                        else
+                                                        {
+                                                            <font face=verdana size=2> @item["TotalNormalSurt"]</font>
+                                                            total = total + decimal.Parse(@item["TotalNormalSurt"].ToString());
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <font face=verdana size=2> @item["TotalOfertaSurt"]</font>
+                                                        total = total + decimal.Parse(@item["TotalOfertaSurt"].ToString());
+                                                    }
+
+                                                }
+                                            </td>
+                                            <td style="text-align:center;">@p["Status"]</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td style="border-right:0;" align="left" colspan="5"><font face="verdana" size="2"><b>@index orden(es).</b></font></td>
+
+                                        <td align="right"><font face="verdana" size="2"><b>TOTAL: $@total</b></font></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <br />
+                        }
+                    }
+                    @*===============================ORDENES PENDIENTES DE SURTIR==================================*@
+                    @{
+                        index = 0;
+                        total = 0;
+                        if (Session["OPendientesSurtRng"] != null)
+                        {
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OPendientesSurtRng"];
+
+                            var dt = ds.Tables[0];
+
+                            <table width="100%" border="01" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" align="center"><font face="verdana" size="2"><b>ORDENES PENDIENTES DE SURTIR</b></font></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="08%" align="center"><font face="verdana" size="2"><b>Orden</b></font></td>
+                                        <td width="22%" align="center"><font face="verdana" size="2"><b>Cliente</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Fecha de<br>la orden</b></font></td>
+                                        <td width="20%" align="center"><font face="verdana" size="2"><b>Compromiso<br>de entrega</b></font></td>
+                                        <td width="15%" align="center"><font face="verdana" size="2"><b>Importe</b></font></td>
+                                        <td width="15%" align="center"><font face="verdana" size="2"><b>Status</b></font></td>
+                                    </tr>
+                                    @foreach (System.Data.DataRow p in dt.Rows)
+                                    {
+                                        <tr>
+                                            <td style="text-align:right;">@p["Orden"]</td>
+                                            <td>@p["Cliente"]</td>
+                                            <td style="text-align:center;">@p["Fecha"]</td>
+                                            <td style="text-align:center;">@p["Compromiso"]</td>
+                                            <td style="text-align:right;">
+                                                @foreach (System.Data.DataRow item in DALServicesM.RepDiaSurtido(2, DateTime.Now.ToString("yyyy/MM/dd"), DateTime.Now.ToString("yyyy/MM/dd")
+                                               , int.Parse(p["Orden"].ToString()), int.Parse(Session["Id_Num_UN"].ToString())).Tables[0].Rows)
+                                                {
+
+                                                    if (item["TotalOfertaComp"] == null)
+                                                    {
+                                                        if (item["TotalNormalComp"] == null)
+                                                        {
+                                                            <font face=verdana size=2 color=#ff0000>Importe no<br>encontrado</font>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <font face=verdana size=2> @item["TotalNormalComp"]</font>
+                                                            total = total + decimal.Parse(@item["TotalNormalComp"].ToString());
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <font face=verdana size=2> @item["TotalOfertaComp"]</font>
+                                                        total = total + decimal.Parse(@item["TotalOfertaComp"].ToString());
+                                                    }
+
+                                                }
+                                            </td>
+                                            <td style="text-align:center;">@p["Status"]</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td align="left"><font face="verdana" size="2"><b>@index orden(es).</b></font></td>
+                                        <td align="right" colspan="4"></td>
+                                        <td align="right"><font face="verdana" size="2"><b>TOTAL: $@total</b></font></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        }
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

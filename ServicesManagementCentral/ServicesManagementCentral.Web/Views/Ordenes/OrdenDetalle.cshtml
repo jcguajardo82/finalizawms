@@ -1,0 +1,949 @@
+﻿
+@{
+    ViewBag.Title = "Orden";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #loading-indicator {
+        /*display: none;*/
+        width: 100px;
+        height: 100px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        /*background: url(~/Content/blocks-Loader.gif) no-repeat center #fff;*/
+        text-align: center;
+        padding: 10px;
+        font: normal 16px Tahoma, Geneva, sans-serif;
+        border: 1px solid #666;
+        margin-left: -50px;
+        margin-top: -50px;
+        z-index: 2;
+        overflow: auto;
+    }
+</style>
+
+<img src="~/Content/blocks-Loader.gif" style="display:none" id="loading-indicator" />
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Orden</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/ordenes/Index">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="~/ordenes/OrdenSeleccionada">Ordenes</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Menu Ordenes</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight" style="padding-top: 0px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox-content p-xl" style="padding-top: 0px;padding-bottom: 0px;">
+                <br />
+                <div class="row">
+                    <div class="col-sm-2 col-md-2 col-lg-2">
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <select class="form-control" id="Id_TipoFolio" name="Id_TipoFolio">
+                            <option selected="selected" value="1">--Elegir Surtidor--</option>
+                            @{
+                                if (Session["listS"] != null)
+                                {
+                                    System.Data.DataSet ds = (System.Data.DataSet)Session["listS"];
+                                    var dt = ds.Tables[0];
+                                    foreach (System.Data.DataRow p in dt.Rows)
+                                    {
+                                        <option value="@p["id_Supplier"]">@p["Name"]</option>
+                                    }
+
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-2 col-md-2 col-lg-2">
+
+                        <div class="form-check">
+                            @if (Session["OrderSelected"] != null)
+                            {
+                                System.Data.DataSet ds = (System.Data.DataSet)Session["OrderSelected"];
+                                var dt = ds.Tables[0];
+                                foreach (System.Data.DataRow p in dt.Rows)
+                                {
+                                    if (p["Unperm_info"].ToString().Trim() == "1")
+                                    {
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    }
+                                    else
+                                    {
+                                        <input class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault">
+                                    }
+                                }
+                            }
+                            
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Usar móvil
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-md-2 col-lg-2">
+                        <button type="button" id="btnAsignaSurtidor" class="btn btn-primary block full-width m-b" onclick="clickLogin()">
+                            Cambiar Surtidor
+                        </button>
+                    </div>
+                    <div class="col-sm-2 col-md-2 col-lg-2">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" onclick="printdiv('div_print');" style="padding-bottom: 4px;margin-bottom: 10px;margin-top: 2px;"><i class="fa fa-print"></i> </a>
+                        @*<span class="label label-success" onclick="imprimir()"><i class="fa fa-print"></i></span>*@
+                    </div>
+                </div>
+                <br />
+                <div id="div_print">
+                    @{
+
+                        if (Session["OrderSelected"] != null)
+                        {
+                            System.Data.DataSet ds = (System.Data.DataSet)Session["OrderSelected"];
+                            var dt = ds.Tables[0];
+                            var dt2 = ds.Tables[4];
+                            var dtObserv = ds.Tables[7];
+                            var dtComents = ds.Tables[8];
+                            var tipoPicking = "Surtido manual";
+                            var id_Num_Categ = string.Empty;
+
+                            int index = 1;
+                            foreach (System.Data.DataRow p in dt.Rows)
+                            {
+
+
+                                <input id="OrderNo" name="OrderNo" value="@p["OrderNo"]" style="visibility:hidden" />
+                                <input id="UeNo" name="UeNo" value="@p["UeNo"]" style="visibility:hidden" />
+                                <input id="StoreNum" name="StoreNum" value="@p["StoreNum"]" style="visibility:hidden" />
+                                <input id="OrderStatus" name="OrderStatus" value="@p["StatusUe"]" style="visibility:hidden" />
+                                <input type="hidden" id="hddIdSurtidor" value="@p["Id_Supplier"]" />
+                                <input type="hidden" id="hddFecEntrega" value=" @p["OrderDeliveryDate"]" />
+
+                                <div class="row">
+
+                                    <div class="col-sm-4 text-left">
+                                        <h4>No. Orden</h4>
+                                        <h4 class="text-navy">
+
+                                            <a href="@Url.Action("ConsultaDetalle","Ordenes", new { order = @p["OrderNo"].ToString()})">  @p["UeNo"]</a>
+                                        </h4>
+                                        <p>
+                                            <span><strong>Fecha de Solicitud:</strong> @p["OrderDate"]</span><br>
+                                            <span>
+                                                <strong>
+                                                    <a onclick="popActulizaHora(@p["OrderNo"])" class="nav-link">Fecha Entrega:</a>
+                                                </strong> @p["OrderDeliveryDate"]
+                                            </span>
+                                            <input type="hidden" value="@p["isPickingManual"].ToString().ToUpper()" id="hddCheckMovil" />
+                                        </p>
+                                        <span>Surtidor:</span>
+
+                                        @if (@p["Supplier_Name"].ToString().Length != 0)
+                                        {
+                                            <h4 class="text-navy">
+
+                                                @if (@p["isPickingManual"].ToString().ToUpper().Equals("FALSE"))
+                                                {
+                                                    tipoPicking = "Surtido asistido";
+                                                }
+                                                @p["Supplier_Name"]<br />
+                                                @Html.ActionLink("Pasillos Especiales", "ListaPasillosEsp", new { order = @p["OrderNo"] }, new { target = "_blank" })<br />
+                                                @tipoPicking
+                                            </h4>
+                                        }
+                                        else
+                                        {
+                                            <h4 class="text-navy">Por asignar</h4>
+                                        }
+
+
+                                        <h4>Origen</h4>
+                                        <h4 class="text-navy">@p["CreatedBy"]</h4>
+
+                                    </div>
+                                    <div class="col-sm-4 text-left">
+                                        <h4>Importe</h4>
+                                        <h4 class="text-navy">$@p["Total"]</h4>
+                                        <h4>
+                                            <a onclick="popActualizaMP(@p["OrderNo"])" class="nav-link">Forma de pago</a>
+                                        </h4>
+                                        <h4 class="text-navy">@p["MethodPayment"] @*@p["DeliveryType"]*@ </h4>
+                                        @switch (@p["MethodPaymentID"].ToString())
+                                        {
+
+                                            case "2":
+                                            case "5":
+                                            case "6":
+                                                <p>Efectivo: $@p["CashPay"].ToString() -- Vales:  $@p["VouchersPay"].ToString() </p>
+                                                break;
+
+                                        }
+
+
+                                    </div>
+                                    <div class="col-sm-4 text-left">
+                                        <h4>Nombre del Cliente:</h4>
+                                        <h4 class="text-navy">@p["CustomerName"]</h4>
+                                        <address>
+                                            <strong>Direccion:</strong><br>
+                                            @p["Address1"]<br>
+                                            @p["Address2"]
+                                            @p["City"], @p["PostalCode"]<br>
+                                            <abbr title="Phone">T:</abbr> @p["Phone"]
+                                            @p["Reference"]
+                                        </address>
+                                        <p>
+                                            <span><strong>Persona autorizada a recibir la orden:</strong> @p["NameReceive"]</span><br>
+                                            <span><strong>Dirección de entrega:</strong> @p["DeliveryAddress"]</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+
+
+                            //detalle de la orden
+                            @*detalle*@
+                            <div class="tableFixHead table-responsive m-t">
+                                <table class="table invoice-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Num</th>
+                                            <th>Codigo</th>
+                                            <th style="text-align:left;">Descripción</th>
+                                            <th>Cantidad pedida</th>
+                                            <th>Precio Internet</th>
+                                            <th>Cantidad Surtida</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+
+                                        @foreach (System.Data.DataRow p in dt2.Rows)
+                                        {
+                                            if (id_Num_Categ != @p["PosObservDesc"].ToString())
+                                            {
+                                                <tr>
+                                                    <td colspan="6" style="text-align:left;">
+                                                        <strong> @p["PosObservDesc"]</strong>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                            <tr>
+                                                <td>@index</td>
+                                                <td>@p["Barcode"]</td>
+                                                <td style="text-align:left;">
+                                                    <div><strong>@p["ProductName"]</strong></div>
+
+                                                    @foreach (System.Data.DataRow row in dtComents.Select("BarCode= " + @p["Barcode"]))
+                                                    {
+                                                        if (@row["Id_Cnsc_ArtCar_Obser"].ToString() == "100" || @row["Id_Cnsc_ArtCar_Obser"].ToString() == "101")
+                                                        {<div><strong>-@row["Desc_ArtCarObser"]</strong></div>}
+                                                    else
+                                                    { <div>-@row["Desc_ArtCarObser"]</div>}
+                                            }
+                                                </td>
+                                                <td style="text-align:right;">@p["pe_Quantity"] @p["UnitMeasure"]</td>
+                                                <td style="text-align:right;">$@p["pe_price"]</td>
+                                                <td style="text-align:right;">@p["e_Quantity"]  @p["UnitMeasure"]</td>
+                                            </tr>
+                                            index++;
+                                            id_Num_Categ = @p["PosObservDesc"].ToString();
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            //==========================OBSERVACIONES==========================================
+
+
+                            if (dtObserv.Rows.Count != 0)
+                            {
+                                <div class="table-responsive m-t">
+                                    <table class="table invoice-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Observaciones</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                index = 1;
+                                            }
+                                            @foreach (System.Data.DataRow p in dtObserv.Rows)
+                                            {
+                                                <tr>
+                                                    <td>@string.Format("{0}.- {1}", index, @p["OrderComments"])</td>
+                                                    <td>  <a class="text-muted" onclick="DelObserv(@p["Id_Cnsc_CarObs"],@p["CnscOrder"])"><i class="fa fa-close"></i> Eliminar</a></td>
+                                                </tr>
+                                                index++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table shoping-cart-table">
+                            <tbody>
+                                <tr>
+                                    <td width="90">
+                                        <div class="cart-product-imitation">
+                                            <i class="fa fa-product-hunt"></i>
+                                        </div>
+                                    </td>
+                                    <td class="desc">
+                                        <h3>
+                                            <a href="#" class="text-navy">
+                                                Ajustes a la Orden
+                                            </a>
+                                        </h3>
+                                        <div class="form-group row">
+                                            <label class="col-sm-1 col-form-label">Codigo:</label>
+
+                                            <div class="col-sm-3"><input type="number" placeholder="codigo" id="in_codigo" class="form-control"></div>
+
+                                            <label class="col-sm-1 col-form-label">Cantidad:</label>
+
+                                            @*<div class="col-sm-2"><input type="number" placeholder="cantidad" id="in_cantidad" class="form-control"></div>*@
+                                            <div class="col-sm-2">
+                                                <input type="number" pattern="^[0-9]+" placeholder="cantidad" id="in_cantidad" min="0"
+                                                       class="form-control" oninput="this.value = Math.max(this.value, 0)">
+                                            </div>
+
+                                            <div class="col-sm-3">
+
+                                                @*<select class="form-control" id="IdMedida" name="IdMedida">
+                                                        <option selected="selected" value="1">--Unidad de Medida--</option>
+                                                        <option value="KG">KG</option>
+                                                        <option value="PZA">PZA</option>
+                                                    </select>*@
+                                            </div>
+
+                                            <div class="col-sm-2">
+                                                <dl class="xl m-b-none">
+                                                    <dt> Ajuste de peso (si aplica)</dt>
+                                                    <dd>
+                                                        <div>
+                                                            <label>
+                                                                <input type="radio" checked="" value="HA" id="optionsRadios1" name="optionsRadios"> Hacia arriba
+                                                            </label>
+                                                        </div>
+                                                    </dd>
+                                                    <dd>
+                                                        <div>
+                                                            <label>
+                                                                <input type="radio" value="HB" id="optionsRadios2" name="optionsRadios"> Hacia abajo
+                                                            </label>
+                                                        </div>
+                                                    </dd>
+                                                </dl>
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Clave Autorizacion:</label>
+
+                                            <div class="col-sm-6"><input type="password" placeholder="clave autorizacion" id="autorization" class="form-control"></div>
+
+
+                                        </div>
+                                    </td>
+                                    <td width="65"></td>
+                                    <td>
+                                        <div class="m-t-sm">
+                                            <a onclick="AddCodigo()" class="text-muted"><i class="fa fa-plus"></i> Agregar</a>
+                                            @*|
+                                                <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove</a>*@
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr></tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox-content">
+                <div class="table-responsive">
+                    <table class="table shoping-cart-table">
+                        <tbody>
+                            <tr>
+                                <td width="90">
+                                    <div class="cart-product-imitation">
+                                        <i class="fa fa-comment"></i>
+                                    </div>
+                                </td>
+                                <td class="desc">
+                                    <h3>
+                                        <a href="#" class="text-navy">
+                                            Observaciones
+                                        </a>
+                                    </h3>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">AGREGAR OBSERVACIONES:</label>
+
+                                        <div class="col-sm-3"><input type="text" id="txtObservaciones" placeholder="observaciones" class="form-control"></div>
+
+
+                                    </div>
+
+                                </td>
+
+                                <td></td>
+                                <td width="65"></td>
+                                <td>
+                                    <div class="m-t-sm">
+                                        <a onclick="AddObserv()" class="text-muted"><i class="fa fa-plus"></i> Agregar</a>
+                                        @*|
+                                            <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove</a>*@
+                                    </div>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="compiled-css" type="text/css">
+    /* Fix table head */
+    .tableFixHead {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+</style>
+@Html.Partial("ActualizaMP")
+@Html.Partial("CambioHora")
+@section scripts {
+
+    <script type="text/javascript">
+
+        $(function () {
+            $(document).ajaxSend(function (event, request, settings) {
+                document.getElementById("loading-indicator").style.display = "block";
+                $("#loading-indicator").show();
+            });
+
+            $(document).ajaxComplete(function (event, request, settings) {
+
+                document.getElementById("loading-indicator").style.display = "none";
+                $("#loading-indicator").hide();
+            });
+        })
+
+        $(document).on({
+            ajaxSend: function () { $("loading-indicator").show(); },
+            ajaxComplete: function () { $("loading-indicator").hide(); }
+        });
+
+        //<![CDATA[
+        // Change the selector if needed
+        var $table = $('table.scroll'),
+            $bodyCells = $table.find('tbody tr:first').children(),
+            colWidth;
+
+        // Adjust the width of thead cells when window resizes
+        $(window).resize(function () {
+            // Get the tbody columns width array
+            colWidth = $bodyCells.map(function () {
+                return $(this).width();
+            }).get();
+
+            // Set the width of thead columns
+            $table.find('thead tr').children().each(function (i, v) {
+                $(v).width(colWidth[i]);
+            });
+        }).resize(); // Trigger resize handler
+
+
+        //]]></script>
+    <script type="text/javascript">
+        function AddCodigo() {
+
+            //var e = document.getElementById("IdMedida");
+            //var value = e.options[e.selectedIndex].value;
+            //var text = e.options[e.selectedIndex].text;
+
+            var radioValue = $("input[name='optionsRadios']:checked").val();
+
+            $.ajax({
+                async: true,
+                type: "POST",
+                url: '@Url.Action("GetCodigoApi", "Ordenes")',
+                data: {
+                    cod: document.getElementById("in_codigo").value,
+                    cant: document.getElementById("in_cantidad").value,
+                    clave: document.getElementById("autorization").value,
+                    action: radioValue,
+                    medida: "",
+                    order: document.getElementById("OrderNo").value,
+                    comentarios: document.getElementById("txtObservaciones").value
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+
+                        location.reload();
+                    }
+                    else {
+                        alert(json.Message)
+                    }
+                }
+               , error: function (jqXHR, textStatus, errorThrown) {
+                   alert(errorThrown);
+
+               }
+            });
+
+        }
+
+        $(document).ready(function () {
+            $(document).ajaxSend(function (event, request, settings) {
+                $('#loading-indicator').show();
+            });
+
+            $(document).ajaxComplete(function (event, request, settings) {
+                $('#loading-indicator').hide();
+            });
+
+            //Cambia texto boton y selecciona combo
+            debugger;
+            //btnAsignaSurtidor
+            var idSup = $("#hddIdSurtidor").val();
+            var idCheck = $("#hddCheckMovil").val();
+            if (idSup == "0") {
+                $("#Id_TipoFolio").val("1");
+                $("#btnAsignaSurtidor").html("Asignar Surtidor");
+            }
+            else {
+                $("#Id_TipoFolio").val(idSup);
+                $("#btnAsignaSurtidor").html("Cambiar Surtidor");
+            }
+
+            if (idCheck == "FALSE") {
+                $("#flexCheckDefault").attr('checked', true)
+            } else { $("#flexCheckDefault").attr('checked', false)}
+        });
+
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            w = window.open();
+
+            w.document.write(printContents);
+            w.document.write('<scr' + 'ipt type="text/javascript">' + 'window.onload = function() { window.print(); window.close(); };' + '</sc' + 'ript>');
+
+            w.document.close(); // necessary for IE >= 10
+            w.focus(); // necessary for IE >= 10
+
+            return true;
+        }
+
+        function PrintElem(elem) {
+            Popup($(elem).html());
+        }
+
+        function Popup(data) {
+            var myWindow = window.open('', 'my div', 'height=400,width=600');
+            myWindow.document.write('<html><head><title>my div</title>');
+            /*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+            myWindow.document.write('</head><body >');
+            myWindow.document.write(data);
+            myWindow.document.write('</body></html>');
+            myWindow.document.close(); // necessary for IE >= 10
+
+            myWindow.onload = function () { // necessary if the div contain images
+
+                myWindow.focus(); // necessary for IE >= 10
+                myWindow.print();
+                myWindow.close();
+            };
+        }
+
+        function printdiv(printpage) {
+            var headstr = "<html><head><title></title></head><body>";
+            var footstr = "</body>";
+            var newstr = document.all.item(printpage).innerHTML;
+            var oldstr = document.body.innerHTML;
+            document.body.innerHTML = headstr + newstr + footstr;
+            window.print();
+            document.body.innerHTML = oldstr;
+            return false;
+        }
+
+        function printdiv2(elementId) {
+
+            let printElement = document.getElementById(elementId);
+            var printWindow = window.open('', 'PRINT');
+            printWindow.document.write(document.documentElement.innerHTML);
+            setTimeout(() => { // Needed for large documents
+                printWindow.document.body.style.margin = '0 0';
+                printWindow.document.body.innerHTML = printElement.outerHTML;
+                printWindow.document.close(); // necessary for IE >= 10
+                printWindow.focus(); // necessary for IE >= 10*/
+                printWindow.print();
+                printWindow.close();
+            }, 1000)
+        }
+
+
+        function imprimir() {
+            window.print();
+        }
+
+        function clickLogin() {
+
+
+
+            //alert("envio de transportista");
+
+
+            //alert($("#Id_TipoFolio").val());
+
+
+            //alert($("#Id_TipoFolio option:selected").text());
+
+            //alert(document.getElementById("OrderNo").value)
+
+
+            FinalizarSurtido();
+
+
+        }
+
+
+        function FinalizarSurtido() {
+
+
+            var ch = "0";
+            if (document.getElementById('flexCheckDefault').checked) {
+                ch = "1";
+            }
+
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("FinalizarSurtido", "Ordenes")',
+                data: {
+                    OrderNo: document.getElementById("OrderNo").value
+                    , tId: $("#Id_TipoFolio").val()
+                    , trans: $("#Id_TipoFolio option:selected").text()
+                    ,ue: document.getElementById("UeNo").value
+                    ,store: document.getElementById("StoreNum").value
+                    ,status: document.getElementById("OrderStatus").value
+                    ,manual: ch
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+
+                        location.reload();
+                    }
+                    else { alert(json.Message) }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+    @* Cmabio de Forma de Pago *@
+    <script>
+        function popActualizaMP(OrderNo) {
+            //GetMotivoCambioFP
+            $('#lblOrdenObsFP').text(document.getElementById("OrderNo").value);
+            $('#dlgActualizaMp').modal('toggle');
+
+             $.ajax({
+                async: false,
+                type: "get",
+                url: '@Url.Action("GetMotivoCambioFP","Ordenes")',
+                data: {
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        var sel = $("#ddlMotivoCFP");
+                        sel.empty();
+                        for (var i = 0; i < json.json.length; i++) {
+                            sel.append('<option value="' + json.json[i].Id_Num_MotCmbFP + '">' + json.json[i].Desc_MotCmbFP + '</option>');
+                        }
+                    }
+                    else { alert(json.Message) }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+        }
+
+        function ActualizaMP() {
+            //GetMotivoCambioFP
+            var _OrdenNo = document.getElementById("OrderNo").value;
+            var _Obs_CambioF = $("#txtObs_CambioFP").val();
+            var myRadio = $("input[name=TipoFormaPago]");
+            var _Id_Num_MotCmbFP = myRadio.filter(":checked").val();
+
+             $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("UpdateFormaPago", "Ordenes")',
+                data: {
+                     Id_Num_Orden: _OrdenNo
+                     , Id_Num_MotCmbFP:_Id_Num_MotCmbFP
+                    , Obs_CambioFP: _Obs_CambioF
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        location.reload();
+                    }
+                    else { alert(json.Message) }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+        }
+
+    </script>
+    @*observaciones*@
+    <script>
+        function DelObserv(Id_Cnsc_CarObs, CnscOrder) {
+            var _OrdenNo = document.getElementById("OrderNo").value;
+
+
+             $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("DelObservaciones", "Ordenes")',
+                data: {
+
+                     Id_Cnsc_CarObs: Id_Cnsc_CarObs
+                    , CnscOrder: CnscOrder
+                    , OrderNo: _OrdenNo
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        location.reload();
+                    }
+                    else { alert(json.Message) }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+
+        }
+
+        function AddObserv() {
+            var _OrdenNo = document.getElementById("OrderNo").value;
+            var _Desc_CarObs = $("#txtObservaciones").val();
+            if (_Desc_CarObs.length != 0) {
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: '@Url.Action("AddObservaciones", "Ordenes")',
+                    data: {
+                        OrderNo: _OrdenNo
+                        , Desc_CarObs: _Desc_CarObs
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                        if (json.Success) {
+                            location.reload();
+                        }
+                        else { alert(json.Message) }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+
+                    }
+                });
+            }
+            else { $("#txtObservaciones").focus();}
+        }
+    </script>
+    @*actualizacion de hora de entrega*@
+    <script>
+
+        $("#ddlDias").change(function () {
+
+            var _fechaOriginal = $("#hddFecEntrega").val();
+            var _fecha = $("[id='ddlDias'] option:selected").text();
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: '@Url.Action("GetHorasEntrega", "Ordenes")',
+                data: {
+                    fechaOriginal: _fechaOriginal
+                    , fechaSelec:_fecha
+                },
+                datatype: "html",
+                success: function (json) {
+                debugger;
+                    if (json.Success)
+                    {
+                        var sel = $("#ddlHoras");
+                        sel.empty();
+
+                        for (var i = 0; i < json.json.length; i++) {
+                            sel.append('<option value="' + json.json[i].fecha + '">' + json.json[i].NombeDia + '</option>');
+                        }
+                }
+            }
+            , error: function (jqXHR, textStatus, errorThrown) {
+            bootbox.alert(errorThrown);
+
+            }
+            });
+        });
+
+        function popActulizaHora(noOrden) {
+            //GetDias
+            $("#txtPassCan").val("");
+            $('#dlgCambioHora').modal('toggle');
+            var _fechaOriginal = $("#hddFecEntrega").val();
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: '@Url.Action("GetDias", "Ordenes")',
+                data: {
+                    fechaOriginal: _fechaOriginal
+                },
+                datatype: "html",
+                success: function (json) {
+                debugger;
+                    if (json.Success)
+                    {
+                        var sel = $("#ddlDias");
+                        sel.empty();
+
+                        for (var i = 0; i < json.json.length; i++) {
+                            sel.append('<option value="' + json.json[i].fecha + '">' + json.json[i].NombeDia + '</option>');
+                        }
+
+                        var sel2 = $("#ddlHoras");
+                        sel2.empty();
+
+                        for (var i = 0; i < json.horas.length; i++) {
+                            sel2.append('<option value="' + json.horas[i].fecha + '">' + json.horas[i].NombeDia + '</option>');
+                        }
+                }
+            }
+            , error: function (jqXHR, textStatus, errorThrown) {
+            bootbox.alert(errorThrown);
+
+            }
+            });
+        }
+
+
+        function ActualziaHora() {
+            //ActualizaFecEntre(string fecha, string rangoHora,string OrdenNo)
+            var _fecha = $("#ddlDias").val();
+            var _rangoHora = $("#ddlHoras").val();
+            var _OrdenNo = $("#OrderNo").val();
+            var _fechaOriginal = $("#hddFecEntrega").val();
+            var _pass = $("#txtPassUpdHr").val();
+
+            if (_pass.length == 0) {
+                $("#txtPassUpdHr").focus();
+                return;
+            }
+             $.ajax({
+                async: false,
+                type: "GET",
+                url: '@Url.Action("ActualizaFecEntre", "Ordenes")',
+                 data: {
+                     fecha: _fecha
+                     , rangoHora: _rangoHora
+                     , OrdenNo: _OrdenNo
+                     , fechaOriginal: _fechaOriginal
+                     , pass: _pass
+                },
+                datatype: "html",
+                success: function (json) {
+                debugger;
+                    if (json.Success) {
+                        if (!alert(json.Message)) { window.location.reload(); }
+                    }
+                    else {
+                        if (!alert(json.Message)) { $("#txtPassUpdHr").focus(); }
+                    }
+            }
+            , error: function (jqXHR, textStatus, errorThrown) {
+            bootbox.alert(errorThrown);
+
+            }
+            });
+        }
+    </script>
+}
+

@@ -1,0 +1,153 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/" />
+    @* <link rel="icon" type="image/vnd.microsoft.icon" href="~/Content/imagen.ico" sizes="16x16 24x24 36x36 48x48">*@
+    <link rel="icon" href="~/Content/icon.ico" type="image/ico" />
+
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/base/css")
+    @Styles.Render("~/Content/fontawesome")
+    @Styles.Render("~/Content/Inspinia/css")
+    @Styles.Render("~/Content/custom")
+
+    @Styles.Render("~/Content/jqueryExtensions/css")
+
+
+</head>
+<body>
+
+    <!-- Wrapper-->
+    <!-- PageClass give you ability to specify custom style for specific view based on action -->
+    <div id="wrapper" class="@Html.PageClass()">
+
+        <!-- Navigation 0-->
+        @Html.Partial("Inspinia/_Navigation")
+
+        <!-- Page wraper -->
+        <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
+
+            <!-- Top Navbar -->
+            @Html.Partial("Inspinia/_TopNavbar")
+
+            <!-- Main view  -->
+            @RenderBody()
+            <div style="position:fixed; top: 0; right: 0;" id="sectionToast">
+
+            </div>
+
+            <!-- Footer -->
+            @Html.Partial("Inspinia/_Footer")
+
+        </div>
+        <!-- End page wrapper-->
+        <!-- Right Sidebar -->
+        @*@Html.Partial("Inspinia/_RightSidebar")*@
+
+    </div>
+
+
+    @Scripts.Render("~/Content/jquery")
+    @Scripts.Render("~/Content/jqueryExtensions/js")
+
+
+    @Scripts.Render("~/Content/popper")
+    @Scripts.Render("~/Content/bootstrap")
+    @Scripts.Render("~/Content/slick")
+
+
+    @Scripts.Render("~/Content/slimscroll")
+
+    @Scripts.Render("~/Content/fullscreen")
+    @Scripts.Render("~/Content/formToJson")
+    @Scripts.Render("~/Content/momment")
+    @Scripts.Render("~/Content/bootstrap-notify")
+    @Scripts.Render("~/Content/bootstrap-datetimepicker/js")
+    @Scripts.Render("~/Content/storage")
+
+
+
+    @Scripts.Render("~/Content/inspiniatheme")
+    @Scripts.Render("~/Content/metisMenu")
+    @Scripts.Render("~/Content/datatable")
+
+
+    @Scripts.Render("~/Content/mapael")
+
+    @Scripts.Render("~/Content/custoscripts")
+
+
+
+
+
+    @*<script type="text/javascript">
+
+        $.extend(true, $.fn.dataTable.defaults, {
+            //Design
+
+            dom: "<'row'<'col col-xs-6'B><'#topRightSection.col-xs-12 col-md-6 text-right' f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'lp>>",
+            processing: false,
+            searching: true,
+            ordering: true,
+            order: [[1, 'asc']],
+            filter: false,
+            info: false,
+            stateSave: false,
+            select: true,
+            select: {
+                style: 'single'
+            },
+            //Paggin
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100, 500],
+
+            // destroy: true, //destruye automaticamente la referencia a la tabla
+            //Ajax
+            //serverSide: true,
+            bServerSide: true,
+            //sServerMethod: "GET",
+            buttons: ['copy', 'csv', 'excel'],
+        });
+
+        //http://bootstrap-notify.remabledesigns.com/
+        $.notifyDefaults({
+            z_index: 3000
+        });
+
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-JsonImpersonate", jsonImpersonate);
+             //   xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+              //xhr.setRequestHeader("Authorization", jsonImpersonate);
+            //   xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
+            },
+           // crossDomain: true,
+
+           //xhrFields: { withCredentials: true }
+        });
+
+/*
+$(document).ready(function () {
+
+$('.i-checks').iCheck({
+checkboxClass: 'icheckbox_square-green',
+radioClass: 'iradio_square-green',
+});
+
+
+});
+*/
+    </script>*@
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

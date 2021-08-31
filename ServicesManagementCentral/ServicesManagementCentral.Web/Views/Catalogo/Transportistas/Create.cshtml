@@ -1,0 +1,51 @@
+﻿<div class="modal inmodal fade" id="dlgCreateServicios" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header pt-3 pb-1">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Agregar - Transportista</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmCreateServicios">
+
+                    <div class="row">
+                        <div class="col col-xs-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label>Nombre del Transportista</label>
+                                <input type="text" placeholder="Transportista" id="nameT"  name="nameT" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xs-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label>Unidad de negocio</label>
+                                <input type="text" disabled id="Id_Num_Un" name="Id_Num_Un" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xs-4 col-md-4">
+                            <div class="form-group">
+                                <label>Estatus</label>
+                                <select class="form-control m-b" id="ddlEstatus">
+                                    <option value="1">Activo</option>
+                                    <option value="2">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary" data-dismiss="modal">Guardar</button>*@
+
+                <button type="button" onclick="AddSurtidores()" class="btn btn-primary">Guardar</button>
+
+
+            </div>
+        </div>
+    </div>
+</div>

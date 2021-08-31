@@ -1,0 +1,45 @@
+﻿
+
+@import "./scss/_general";
+@import "./scss/_soriana";
+
+
+
+
+.carrusel-process {
+    .ibox-content {
+        margin: 0 .25rem;
+    }
+
+    .card  {
+        width: 99% !important;
+    }
+}
+
+.mapcontainer {
+    background-color: #9ec5ea;
+}
+
+
+.btn-primary {
+    background-color: #D52B1E !important;
+    border-color: #D52B1E !important;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+
+
+
+.containerEventViewer {
+    max-height: 35rem;
+    overflow: auto;
+}
+
+
+.super-hide{
+    display:none !important;
+    visibility:hidden !important;
+}

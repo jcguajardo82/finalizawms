@@ -1,0 +1,186 @@
+﻿@using ServicesManagement.Web.Models;
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Order order = ViewBag.Order as Order;
+    Detail detail = ViewBag.Detail as Detail;
+    List<Product> products = ViewBag.Products as List<Product>;
+}
+@{ if (order != null)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox">
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 text-left">
+                            <span>Folio Caso Cliente</span>
+                            <h2 class="text-navy">
+                                @order.orderId
+                            </h2>
+                        </div>
+                        <div class="col-sm-2 text-left">
+                            <span>No. Orden</span>
+                            <h2 class="text-navy">
+                                @order.OrderNo
+                            </h2>
+                        </div>
+                        <div class="col-sm-4 text-left">
+                            <span>Fecha de Solicitud:<h2 class="text-navy"> @order.OrderDate.ToString("dd/MMM/yyyy") @order.OrderDeliveryTime</h2></span><br>
+                        </div>
+                        <div class="col-sm-4 text-left">
+                            <span>Fecha de Entrega:<h2 class="text-navy"> @order.OrderDeliveryDate.ToString("dd/MMM/yyyy") @order.OrderDeliveryTime</h2></span><br>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="ibox" style="padding-bottom:20px;">
+                    <div class="ibox-title">
+                        <span class="float-right">(<strong>@products.Count()</strong>) Artículos</span>
+                        <h5>Artículos Folio</h5>
+                    </div>
+                    <div class="row" style="text-align:right;">
+                        <div class="col-md-10">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary">Enviar Artículos</button>
+                        </div>
+                    </div>
+                    @foreach (Product item in products)
+                    {
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <table class="table shoping-cart-table">
+                                    <tbody>
+                                        <tr>
+                                            <td width="90">
+                                                <div class="cart-product-imitation">
+                                                    <img class="image" src="@item.ArticuloFoto" width=90 height=90>
+                                                </div>
+                                            </td>
+                                            <td class="desc">
+                                                <h3>
+                                                    <a href="#" class="text-navy">
+                                                        @item.ProductName
+                                                    </a>
+                                                </h3>
+                                                <p class="small">
+                                                    @item.Observations
+                                                </p>
+                                                @*<dl class="small m-b-none">
+                                        <dt>Description lists</dt>
+                                        <dd>A description list is perfect for defining terms.</dd>
+                                    </dl>*@
+
+                                                <div class="m-t-sm">
+                                                    <input type="file" class="form-control-file"><button type="button" class="btn btn-light">Guardar Foto</button>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                $@item.PosPriceOfferSale.ToString("0.00")
+                                                @if (item.PosPriceNormalSale > item.PosPriceOfferSale)
+                                                {
+                                                    <s class="small text-muted">$@item.PosPriceNormalSale.ToString("0.00")</s>
+                                                }
+
+                                            </td>
+                                            <td width="65">
+
+                                                <label class="form-control">@item.Quantity.ToString("0.00")</label>
+                                            </td>
+                                            <td>
+                                                <h4>
+                                                    $@item.Total.ToString("0.00")
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+            
+                   
+                    <div class="row" style="text-align:right;">
+                        <div class="col-md-10">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary">Enviar Artículos</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Total de la Orden</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <span>
+                            Total
+                        </span>
+                        <h2 class="font-bold">
+                            $@detail.Total.ToString("0.00")
+                        </h2>
+
+                        <hr>
+                        <span>
+                            Forma de pago
+                        </span>
+                        <h2>@detail.MethodPayment  </h2>
+                        @*<p>Efectivo: $1603.7000 -- Vales:  $0.0000 </p>*@
+                        @switch (@detail.MethodPaymentID.ToString())
+                        {
+
+                            case "2":
+                            case "5":
+                            case "6":
+                                <p>Efectivo: $@detail.CashPay.ToString() -- Vales:  $@detail.VouchersPay.ToString() </p>
+                                break;
+
+                        }
+                    </div>
+                </div>
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Cliente</h5>
+                    </div>
+                    <div class="ibox-content text-center">
+
+                        <h3>@detail.CustomerName</h3>
+                        <address>
+                            <strong>Dirección:</strong><br>
+                            @detail.Address1 <br>
+                            @detail.Address2
+                            @detail.City,@detail.StateCode, @detail.PostalCode<br>
+                            <abbr title="Phone">T:</abbr> @detail.Phone
+                            test
+                        </address>
+                        <p>
+                            <span><strong>Persona autorizada a recibir la orden:</strong> @detail.NameReceive</span><br>
+                            <span><strong>Dirección de entrega:</strong>@detail.DeliveryAddress</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <h2>Lo sentimos, no se encontro información relacionada a la orden solicitada.</h2>
+    }
+
+}
+

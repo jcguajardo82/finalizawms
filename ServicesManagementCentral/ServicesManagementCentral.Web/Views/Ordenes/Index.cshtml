@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Surtido de Ordenes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .height-limiter {
+        height: 600px;
+        overflow: scroll;
+    }
+</style>
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <h2>Seleccionar la unidad de negocio.</h2>
+        <input id="searchinput" placeholder="Buscar Unidad de Negocio" type="search" class="form-control">
+    </div>
+    <div class="col-3">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <ul class="height-limiter dd-list" style="" id="listTdas">
+
+            @{
+
+                if (Session["listaUN"] != null)
+                {
+                    System.Data.DataSet ds = (System.Data.DataSet)Session["listaUN"];
+                    var dt = ds.Tables[0];
+
+
+                    int index = 0;
+                    foreach (System.Data.DataRow p in dt.Rows)
+                    {
+                        <li class="dd-item" data-id="2">
+                            <a href="@Url.Action("SeleccionTda","Ordenes", new { un = @p[0].ToString() ,desc_un = @p[1].ToString()})">
+                                <div class="dd-handle">
+                                    <span class="float-right"> Call Center </span>
+                                    <span class="label label-success"><i class="fa fa-car"></i></span> @p[1].ToString()
+                                </div>
+                            </a>
+                        </li>
+
+                    }
+
+
+                }
+            }
+
+
+
+            @*<li class="dd-item" data-id="2">
+                    <a href="@Url.Action("OrdenSeleccionada","Ordenes")">
+                        <div class="dd-handle">
+                            <span class="float-right"> Call Center </span>
+                            <span class="label label-success"><i class="fa fa-car"></i></span> 2 - SAN ISIDRO (Saltillo, Coah.).
+                        </div>
+                    </a>
+                </li>
+
+
+
+                <li class="dd-item" data-id="2">
+                    <div class="dd-handle">
+                        <span class="float-right"> Call Center </span>
+                        <span class="label label-success"><i class="fa fa-car"></i></span> 24 - Cumbres (Mty, N.L.).
+                    </div>
+                </li>*@
+        </ul>
+    </div>
+    <div class="col-3"></div>
+
+
+</div>
+
+@*@Html.Partial("Servicios/Create")*@
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#searchinput").focus();
+
+        });
+        $('input[type="search"]').keyup(function () {
+
+            //var that = this;
+            //var all_list = $('#listTdas li');
+            var that = this, $allListElements = $('#listTdas > li');
+
+            var $matchingListElements = $allListElements.filter(function (i, li) {
+                var listItemText = $(li).text().toUpperCase(), searchText = that.value.toUpperCase();
+                return ~listItemText.indexOf(searchText);
+            });
+
+            $allListElements.hide();
+            $matchingListElements.show();
+
+        });
+    </script>
+}

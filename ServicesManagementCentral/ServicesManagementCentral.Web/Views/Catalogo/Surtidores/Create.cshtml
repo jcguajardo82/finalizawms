@@ -1,0 +1,85 @@
+﻿<div class="modal inmodal fade" id="dlgCreateServicios" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header pt-3 pb-1">
+
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+                <h4 class="modal-title">Agregar - Surtidor</h4>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form id="frmCreateServicios">
+
+                    <div class="row">
+
+                        <div class="col col-xs-8 col-md-4">
+
+                            <div class="form-group">
+
+                                <label>Número de empleado</label>
+
+                                <input type="text" placeholder="Numero de Empleado" id="numE" name="numE" class="form-control" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="col col-xs-2 col-md-2 text-left">
+
+                            <button class="btn btn-success mt-4" type="button" onclick="GetEmployee()"><i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">Buscar</span></button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col col-xs-6 col-md-6">
+
+                            <div class="form-group">
+
+                                <label>Nombre del Surtidor</label>
+
+                                <input type="text" disabled placeholder="Surtidor" id="nameS" name="nameS" class="form-control" />
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col col-xs-6 col-md-6">
+
+                            <div class="form-group">
+
+                                <label>Unidad de negocio</label>
+                                <input type="text" disabled id="Id_Num_UN" name="Id_Num_UN" class="form-control" value="@Session["Desc_Num_UN"]" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xs-4 col-md-4">
+                            <div class="form-group">
+                                <label>Estatus</label>
+                                <select class="form-control m-b" id="ddlEstatus" name="account">
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" onclick="AddSurtidores()" class="btn btn-primary">Guardar</button>
+                @*<button type="button" onclick="addSurtidores()" class="btn btn-primary" data-dismiss="modal">Guardar</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+

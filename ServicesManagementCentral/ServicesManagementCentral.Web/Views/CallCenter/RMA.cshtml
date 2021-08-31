@@ -1,0 +1,123 @@
+﻿<div class="modal inmodal fade" id="dlgRma" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header pt-3 pb-1">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">RMA</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmCreateServicios">
+                    <div id="wizard">
+                        <h3>Detalle de Orden</h3>
+                        <section>
+                            <div class="row">
+                                <div class="col-xs-5 col-md-5 col-lg-5">
+                                    <select class="form-control" id="cmbServicio" name="cmbServicio">
+                                        <option selected="selected" value="0">Devolución</option>
+                                        <option selected="selected" value="0">Reenvolso</option>
+                                        <option selected="selected" value="0">Cambio Fisico</option>
+                                        <option selected="selected" value="0">Reenvio</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                    <table id="tblFormaPago" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                        <thead class="bg-warning">
+                                            <tr role="row">
+                                                <th class="text-center sorting" style="width:20px"></th>
+                                                <th class="text-center sorting">Descripción</th>
+                                                <th class="text-center sorting">Cantidad</th>
+                                                <th class="text-center sorting">Precio</th>
+                                                <th class="text-center sorting">Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="checkbox" onclick="ValidaProducto(1)" class="checkbox" /></td>
+                                                <td>
+                                                    coca cola 500 ml
+                                                </td>
+                                                <td>
+                                                    1
+                                                </td>
+                                                <td>
+                                                    $10.00
+                                                </td>
+                                                <td>
+                                                    $10.00
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" onclick="ValidaProducto(0)" class="checkbox" /></td>
+                                                <td>
+                                                    coca cola 500 ml
+                                                </td>
+                                                <td>
+                                                    1
+                                                </td>
+                                                <td>
+                                                    $10.00
+                                                </td>
+                                                <td>
+                                                    $10.00
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td></td>
+                                                <td colspan="2"><b>Costo total de la orden</b></td>
+                                                <td><b>$20.00</b></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </section>
+                        <h3>Subir Evidencias</h3>
+                        <section>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                    <b>Url del Cliente:</b>
+
+                                    <div class="alert alert-danger">
+                                        <h2>omsmercurio.com/rma/orden=231256544</h2>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6 col-lg-6"><input type="text" class="form-control input-sm" placeholder="Comentarios de la Imagen" /> </div>
+                                <div class="col-xs-6 col-md-6 col-lg-6"><input type="file" /> </div>
+                            </div>
+
+                        </section>
+                        <h3>Solicitar Autorizacion</h3>
+                        <section>
+                            <p>
+                                Se envia a proceso de autorizacion para su seguimiento. Favor de validar en la su status en la pestaña de seguimiento RMA.
+                            </p>
+                            <p>Dar click para generar la solicitud en el boton de finalizar</p>
+                        </section>
+
+                    </div>
+
+
+                </form>
+            </div>
+
+            @*<div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+
+            </div>*@
+        </div>
+    </div>
+</div>
+
+
+

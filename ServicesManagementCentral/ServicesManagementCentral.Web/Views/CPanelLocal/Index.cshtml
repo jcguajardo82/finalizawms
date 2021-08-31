@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Soriana - Panel de Control (Desde Base de Datos)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>@ViewBag.Title </h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index","Home")">Home</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>@ViewBag.Title</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<br />
+<button type="button" class="btn btn-primary btn-lg btn-block" onclick="CPanelLocal.GetDBServidores();">Refresh</button>
+
+<div class="row justify-content-sm-center">
+    <div class="col-lg-10 pt-2">
+        <div class="carrusel-process" id="carruselProcess"></div>
+    </div>
+</div>
+
+<div class="mapcontainer mt-4" id="mapProcess">
+    <div class="map"></div>
+</div>
+
+<div class="modal fade" id="dlgDetailsWS" tabindex="-1" role="dialog" aria-labelledby="titleDeatilWS" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titleDeatilWS">Incidencias por Tienda</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="tabWsMQ" role="tablist">
+                    <li class="nav-item hide-tab-ws" role="presentation">
+                        @*active*@
+                        <a class="nav-link " id="tab-ws" data-toggle="tab" href="#ws" role="tab" aria-controls="ws">Servicios Windows <span class="badge badge-light" id="bdgService"></span></a>
+                    </li>
+                    <li class="nav-item hide-tab-msmq" role="presentation">
+                        <a class="nav-link" id="tab-msmq" data-toggle="tab" href="#msmq" role="tab" aria-controls="msmq">Messages Queues <span class="badge badge-light" id="bdgQueue"></span></a>
+                    </li>
+                </ul>
+                <div class="tab-content pt-2" id="myTabContent">
+                    @*show active*@
+                    <div class="tab-pane hide-tab-ws" id="ws" role="tabpanel" aria-labelledby="tab-ws">
+                        <table id="tblDetailWS" class="display table table-striped table-bordered table-hover table-responsive-md expand"> </table>
+                    </div>
+                    <div class="tab-pane hide-tab-msmq" id="msmq" role="tabpanel" aria-labelledby="tab-msmq">
+                        <table id="tblDetailQueue" class="display table table-striped table-bordered table-hover table-responsive-md expand"> </table>
+                    </div>
+
+                </div>
+
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dlgLogsEV" tabindex="-1" role="dialog" aria-labelledby="titleDeatilWS" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titleLogsEV"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body containerEventViewer pb-0">
+                @*<div id="ContentLogsEV"></div>*@
+                <table id="tblEventViewer" class="display table table-striped table-bordered table-hover table-responsive-md expand"> </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            CPanelLocal.Initialize();
+        });
+    </script>
+}

@@ -1,0 +1,335 @@
+﻿
+@{
+    ViewBag.Title = "Orden";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<style>
+    #table-scroll {
+        height: 300px;
+        overflow-y: auto;
+        margin-top: 20px;
+        width: 1200px;
+    }
+</style>
+@{
+    if (Session["OrderSelected"] != null)
+    {
+        System.Data.DataSet ds = (System.Data.DataSet)Session["OrderSelected"];
+        var dt = ds.Tables[0];
+
+
+        int index = 0;
+        foreach (System.Data.DataRow p in dt.Rows)
+        {
+
+            <div class="row">
+                <div class="col-sm-3"><h2>Orden: @p["OrderNo"]</h2></div>
+                <div class="col-sm-5"><h2>Fecha Arribo: @p["DeliveryDate"]</h2> </div>
+                <div class="col-sm-4"><H2>Surtidor: @p["Supplier_Name"]</H2></div>
+            </div>
+
+            <input id="OrderNo" name="OrderNo" value="@p["OrderNo"]" style="visibility:hidden" />
+            <input id="UeNo" name="UeNo" value="@p["UeNo"]" style="visibility:hidden" />
+            <input id="StoreNum" name="StoreNum" value="@p["StoreNum"]" style="visibility:hidden" />
+            <input id="OrderStatus" name="OrderStatus" value="@p["StatusUe"]" style="visibility:hidden" />
+        }
+    }
+
+}
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4" style="text-align:center">Para mostrar los datos completos de la orden hacer click aquí.</div>
+    <div class="col-sm-4"></div>
+</div>
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4" style="text-align:center;color:red">Número de contenedores mayor que 25.</div>
+    <div class="col-sm-4"></div>
+</div>
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4" style="text-align:center;color:red">Favor de revisar o reportar</div>
+    <div class="col-sm-4"></div>
+</div>
+<div class="top-navigation pace-running pace-running pace-running pace-running">
+
+    <div class="col-lg-4">
+        @*<h2>Listado Orden</h2>*@
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="~/CPanel/Index">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index","Ordenes")">Ordenes</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Embarque</strong>
+            </li>
+        </ol>
+    </div>
+    <br />
+    <div id="tblConsulta_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+        @*<div class="row">
+                <div class="col col-xs-6">
+                    <div class="dt-buttons btn-group flex-wrap">
+                        <button class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="tblConsulta" type="button"><span>Copy</span></button>
+                        <button class="btn btn-secondary buttons-csv buttons-html5" tabindex="0" aria-controls="tblConsulta" type="button"><span>CSV</span></button>
+                        <button class="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="tblConsulta" type="button"><span>Excel</span></button>
+                    </div>
+                </div>
+
+            </div>*@
+        <div id="table-scroll">
+            <div id="tblConsulta_Surtido" class="fixed_header dataTables_wrapper dt-bootstrap4 no-footer" style="height:300px;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table id="tblConsulta" class="display table table-striped table-bordered table-hover table-responsive-md expand dataTable no-footer" role="grid" style="width: 1115px;">
+                            <thead class="bg-primary">
+                                <tr role="row">
+                                    <th class="text-center sorting" tabindex="0" aria-controls="tblServicios" rowspan="1" colspan="1" style="width: 118px;">Codigo</th>
+                                    <th class="text-center sorting" tabindex="0" aria-controls="tblServicios" rowspan="1" colspan="1" style="width: 115px;">Descripcion</th>
+                                    <th class="text-center sorting" tabindex="0" aria-controls="tblServicios" rowspan="1" colspan="1" style="width: 111px;">Cant. Pedida</th>
+                                    <th class="text-center sorting" tabindex="0" aria-controls="tblServicios" rowspan="1" colspan="1" style="width: 126px;">Precio Internet</th>
+                                    <th class="text-center sorting" tabindex="0" aria-controls="tblServicios" rowspan="1" colspan="1" style="width: 124px;">Cantidad Surtida</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                @{
+
+                                    //OrderNo
+                                    //CnscOrder
+                                    //ItemCnsc
+                                    //ProductId
+                                    //Barcode
+                                    //ProductName
+                                    //Quantity
+                                    //Price
+                                    //Observations
+                                    //UnitMeasure
+
+                                    if (Session["OrderSelected"] != null)
+                                    {
+                                        System.Data.DataSet ds = (System.Data.DataSet)Session["OrderSelected"];
+                                        var dt = ds.Tables[4];
+
+
+                                        int index = 0;
+                                        foreach (System.Data.DataRow p in dt.Rows)
+                                        {
+                                            <tr>
+                                                <td style="text-align:right">@p["Barcode"]<br />@p["ProductId"]</td>
+                                                <td style="text-align:center">@p["ProductName"]</td>
+                                                <td style="text-align:center">@p["pe_Quantity"]</td>
+                                                <td>
+                                                    @if ((decimal)(@p["pe_price"]) == 0)
+                                                    {
+                                                        @p["e_price"]
+                                                    }
+                                                    else
+                                                    {
+                                                        @p["pe_price"]
+                                                    }
+
+                                                </td>
+                                                <td>@p["e_Quantity"]</td>
+                                            </tr>
+
+
+
+                                        }
+
+
+                                    }
+                                }
+
+
+
+
+                                @*<tr>
+                                        <td style="text-align:center">
+                                            <a href="@Url.Action("OrdenDetalle","Ordenes")" title="Click para ver el detalle de la orden" class="btn btn-link">100998006</a>
+                                        </td>
+                                        <td style="text-align:right">5</td>
+                                        <td style="text-align:center">Entrega en Tienda</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td style="text-align:center"> <span class="label label-danger">2020-11-10 19:00</span></td>
+                                        <td>AMEX VS Entrega</td>
+                                        <td>Juan Perez</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <a href="@Url.Action("DespOrden","Ordenes")" title="Click para ver el detalle de la orden" class="btn btn-link">100998006</a>
+                                        </td>
+                                        <td style="text-align:right">5</td>
+                                        <td>Entrega en Tienda</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td>AMEX VS Entrega</td>
+                                        <td>Juan Perez</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <a href="@Url.Action("OrdenDetalle","Ordenes")" title="Click para ver el detalle de la orden" class="btn btn-link">100998006</a>
+                                        </td>
+                                        <td style="text-align:right">5</td>
+                                        <td style="text-align:center">Entrega en Tienda</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td style="text-align:center"> <span class="label label-danger">2020-11-10 19:00</span></td>
+                                        <td>AMEX VS Entrega</td>
+                                        <td>Juan Perez</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <a href="@Url.Action("DespOrden","Ordenes")" title="Click para ver el detalle de la orden" class="btn btn-link">100998006</a>
+                                        </td>
+                                        <td style="text-align:right">5</td>
+                                        <td>Entrega en Tienda</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td>AMEX VS Entrega</td>
+                                        <td>Juan Perez</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <a href="@Url.Action("OrdenDetalle","Ordenes")" title="Click para ver el detalle de la orden" class="btn btn-link">100998006</a>
+                                        </td>
+                                        <td style="text-align:right">5</td>
+                                        <td style="text-align:center">Entrega en Tienda</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td style="text-align:center"> <span class="label label-danger">2020-11-10 19:00</span></td>
+                                        <td>AMEX VS Entrega</td>
+                                        <td>Juan Perez</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <a href="@Url.Action("DespOrden","Ordenes")" title="Click para ver el detalle de la orden" class="btn btn-link">100998006</a>
+                                        </td>
+                                        <td style="text-align:right">5</td>
+                                        <td>Entrega en Tienda</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td style="text-align:center">2020-11-10 19:00</td>
+                                        <td>AMEX VS Entrega</td>
+                                        <td>Juan Perez</td>
+                                    </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label">Numero de contenedores:</label>
+                    <div class="col-sm-3"><input type="text" id="in_contenedores" placeholder="" class="form-control"></div>
+                </div>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label">Numero de Bolsas:</label>
+                    <div class="col-sm-3"><input type="text" id="in_bolsas" placeholder="" class="form-control"></div>
+                </div>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label">Numero de Hieleras:</label>
+                    <div class="col-sm-3"><input type="text" id="in_hieleras" placeholder="" class="form-control"></div>
+                </div>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4" style="text-align:center"></div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="CheckPinPad" checked>
+                        <label class="form-check-label" for="flexCheckDefault" style="width:200px">
+                            Pin Pad:
+                        </label>
+                        <a class="btn btn-danger" onclick="FinalizaEmbarque()">Surtir Orden</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+</div>
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetSuetidores();
+
+        });
+
+
+
+        function FinalizaEmbarque() {
+
+
+            
+            var ch = "0";
+            if (document.getElementById('CheckPinPad').checked) {
+                ch = "1";
+            }
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("FinalizarEmbarque", "Ordenes")',
+                data: {
+                    //num: id
+
+                    OrderNo: document.getElementById("OrderNo").value,
+                    ue: document.getElementById("UeNo").value,
+                    store: document.getElementById("StoreNum").value,
+                    status: document.getElementById("OrderStatus").value,
+                    bolsas: document.getElementById("in_bolsas").value,
+                    contenedores: document.getElementById("in_contenedores").value,
+
+                    hieleras: document.getElementById("in_hieleras").value,
+                    checkPinPad: ch
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+
+                        //window.location.href = '@Url.Content("~/ordenes/OrdenSeleccionada")';
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    bootbox.alert(errorThrown);
+
+                }
+            });
+
+        }
+
+
+
+        function ShowFilter() {
+            $("#filter").collapse('toggle');
+        };
+    </script>
+}
+

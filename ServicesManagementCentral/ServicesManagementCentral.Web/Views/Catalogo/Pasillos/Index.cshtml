@@ -1,0 +1,944 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Pasillos";
+}
+
+<style id="compiled-css" type="text/css">
+    /* Fix table head */
+    .tableFixHead {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+</style>
+<div class="row wrapper border-bottom white-bg page-heading">
+
+    @*<h2>@ViewBag.Title </h2>*@
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="~/CPanel/Index">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a>Catalogo</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <strong>Pasillos</strong>
+        </li>
+    </ol>
+
+</div>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-5 col-md-5 col-lg-5" style="padding-left:0px;padding-right:0px">
+            <div class="ibox">
+                <div class="ibox-content" style="padding: 0px 0px 0px 0px;">
+                    <div style="padding:4px 0px 4px 4px">
+                        <input type="hidden" id="hddIdUn" />
+                        <input type="hidden" id="hddIdCsnPasillo" />
+                        <button class="btn-white btn btn-xs" onclick="AddPasillo()">+</button>
+                        <button class="btn-white btn btn-xs" onclick="Reporte()">Reportes</button>
+                        <button class="btn-white btn btn-xs" onclick="AddPasilloUnEsp()">Crear Pasillo Especial</button>
+                    </div>
+                    <div style="overflow:auto;height:500px;padding: 0px 0px 0px 0px;">
+                        <table id="tblPasillos" class="table table-borderless">
+                            <tbody>
+                                @*<tr>
+                                        <td style="width:70px;"><input type="text" id="product_name" name="product_name" value="1" placeholder="" class="form-control input-sm"></td>
+                                        <td>
+                                            <input type="text" id="product_name" name="product_name" value="Pasillo 2" placeholder="" class="form-control input-sm">
+                                        </td>
+                                        <td>
+                                            <button class="btn-white btn btn-xs">Lineas</button>&nbsp;
+                                            <button type="button" class="btn btn-xs btn-danger btn-circle"> <i class="fa fa-close"></i></button>
+                                        </td>
+                                    </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7 col-md-7 col-lg-7" style="padding-left:5px;padding-right:0px">
+            <div class="ibox" id="divReportes" style="display:none">
+                <div class="ibox-content">
+                    <div style="padding:0px 0px 4px 4px">
+                        <div class="row">
+                            <div class="col col-xs-12 col-md-12 right block">
+                                @Html.ActionLink("Reporte Total de Avance", "PasilloRptExcel", new { opcion = 1 }, new { @class = "btn-white btn btn-xs" })
+                                @Html.ActionLink("Reporte por Linea", "PasilloRptExcel", new { opcion = 2 }, new { @class = "btn-white btn btn-xs" })
+                                <button class="btn-white btn btn-xs" onclick="PrintDiv()">Imprimir </button>
+                                <script>
+                                    function PrintDiv() {
+                                        var divContents = document.getElementById("divRptPasillo").innerHTML;
+                                        //Get the HTML of div
+                                        var divElements = document.getElementById('divRptPasillo').innerHTML;
+                                        //Get the HTML of whole page
+                                        var oldPage = document.body.innerHTML;
+                                        //Reset the page's HTML with div's HTML only
+                                        document.body.innerHTML =
+                                            "<html><head><title></title><link href='/Content/plugins/bootstrap/css/bootstrap.css' type='text/css' /></head><body>" +
+                                            divElements + "</body>";
+                                        //Print Page
+                                        window.print();
+                                        //Restore orignal HTML
+                                        document.body.innerHTML = oldPage;
+                                    }
+                                </script>
+
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col col-xs-2 col-md-2 right block"><label>Pasillo:</label></div>
+                            <div class="col col-xs-6 col-md-6 pull-left">
+                                <select class="form-control form-control-sm m-b" id="ddlPasilloReporte"></select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-xs-2 col-md-2 right block"><label>División:</label></div>
+                            <div class="col col-xs-4 col-md-4 pull-left">
+                                <select class="form-control form-control-sm m-b" id="ddlDivisionReporte"></select>
+                            </div>
+                            <div class="col col-xs-2 col-md-2 right block"><label>Categoría:</label></div>
+                            <div class="col col-xs-4 col-md-4 pull-left">
+
+                                <select class="form-control form-control-sm m-b" id="ddlCategoriaReporte"></select>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="tableFixHead table-responsive m-t" id="divRptPasillo">
+                                <table id="tblReporte" class="table invoice-table">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-center" tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">División</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Orden Pasillo</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Nombe Pasillo</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Categoría</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Nombe Categoría</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Orden Linea</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Linea</th>
+                                            <th tabindex="0" aria-controls="tblReporte" rowspan="1" colspan="1">Nombe Linea</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox" id="divPasilloCategoria" style="display:none">
+                <div class="ibox-content">
+                    <div style="padding:0px 0px 4px 4px">
+                        <h2 id="lblDescPasCat"></h2>
+                        <hr />
+                        <div class="row">
+                            <div class="col col-xs-2 col-md-2 right block"><label>División:</label></div>
+                            <div class="col col-xs-4 col-md-4 pull-left">
+                                <select class="form-control form-control-sm m-b" id="ddlDivPasCat"></select>
+                            </div>
+
+                            <div class="col col-xs-2 col-md-2 right block"><label>Categoría:</label></div>
+                            <div class="col col-xs-4 col-md-4 pull-left">
+
+                                <select class="form-control form-control-sm m-b" id="ddlCatPasCat"></select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-xs-6 col-md-6 col-md-6" style="overflow:auto;height:450px;">
+                            <div style="padding:4px 0px 4px 4px">
+                                <button class="btn-white btn btn-xs" id="btnCheckLineasIzq" onclick="CheckAll('tblLineasIzq')">Marcar Todas</button>
+                                <button class="btn-white btn btn-xs" id="btnQuitarLineasElegidas" onclick="QuitarLineasElegidas()">Quitar Elegidas</button>
+                            </div>
+                            <table class="table table-borderless" id="tblLineasIzq">
+                                <tbody></tbody>
+                            </table>
+
+                        </div>
+                        <div class="col col-xs-6 col-md-6 col-md-6" style="overflow:auto;height:450px;">
+                            <div style="padding:4px 0px 4px 4px">
+                                <button class="btn-white btn btn-xs" id="btnCheckLineasDer" onclick="CheckAll('tblLineasDer')">Marcar Todas</button>
+                                <button class="btn-white btn btn-xs" id="btnAgregarLineasElegidas" onclick="AgregarLineasElegidas()">Agregar Elegidas</button>
+                            </div>
+                            <table class="table table-borderless" id="tblLineasDer">
+                                @*<tr>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox"  value="" id="defaultCheck1" >
+                                            <input style="width:50px;" type="text" id="product_name" name="product_name" value="1" placeholder="" class="form-control input-sm">
+
+                                        </td>
+                                        <td>
+                                            <h4>Derivados Especialidad</h4>
+                                            <p style="font:bold;font-size:11px;">Abarrotes 7 totillas Y Tostadas Empacadas</p>
+                                        </td>
+                                    </tr>*@
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            GetPasilloUn();
+        });
+
+        function ShowFilter() {
+            $("#filter").collapse('toggle');
+        };
+
+        function GetPasilloUn()
+        {
+
+            debugger;
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: '@Url.Action("GetPasilloUn", "Catalogo")',
+                data: {
+                    //  Id_Num_UN: _Id_Num_UN
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        $('#tblPasillos tbody').empty();
+                        //var tr;
+
+                        debugger;
+
+                        //Append each row to html table
+                        for (var i = 0; i < json.json.length; i++) {
+                            tr = $('<tr/>');
+                            var estilo = "style='visibility:hidden;'"
+                            if (json.json[i].Id_Num_PasilloTipo == "1") { estilo = "style='visibility:visible;'"}
+
+                            //tr.append("<td class='row1'>" + json.json[i].Id_Num_Orden + "</td>");
+                            tr.append("<td style='width: 70px;''><input type='text' id='orden-" + json.json[i].Id_Cnsc_Pasillo
+                                + "' onchange='ActualizarPasaillo(" + json.json[i].Id_Cnsc_Pasillo + "," + json.json[i].Id_Num_UN+")' class='form-control input-sm' value='" + json.json[i].Num_Orden + "'></td>");
+                            tr.append("<td><input " + "onchange='ActualizarPasaillo(" + json.json[i].Id_Cnsc_Pasillo + "," + json.json[i].Id_Num_UN + ")' type='text' id='desc-" + json.json[i].Id_Cnsc_Pasillo + "' class='form-control input-sm' value='" + json.json[i].Nom_Pasillo.trim()+"'></td>");
+                            tr.append("<td><button onclick='EditCat(" + json.json[i].Id_Cnsc_Pasillo + "," + json.json[i].Id_Num_UN +")' class='btn-white btn btn-xs'>Lineas</button>&nbsp;<button onclick='DelPasilloUn(" + json.json[i].Id_Num_UN + "," + json.json[i].Id_Cnsc_Pasillo + ")' type='button'" + estilo+" class='btn btn-xs btn-danger btn-circle'><i class='fa fa-close'></i></button>");
+
+                            $("#hddIdUn").val(json.json[i].Id_Num_UN);
+                            $('#tblPasillos').append(tr);
+                        }
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+
+
+
+        }
+
+        function EditCat(Id_Cnsc_Pasillo, Id_Num_UN) {
+            $("#divReportes").css("display", "none");
+            $("#divPasilloCategoria").css("display", "block");
+            var _Nom_PasilloTipo = document.getElementById("desc-" + Id_Cnsc_Pasillo).value;
+            $("#hddIdUn").val(Id_Num_UN);
+            $("#hddIdCsnPasillo").val(Id_Cnsc_Pasillo);
+
+               $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("PasilloUnEditCateg", "Catalogo")',
+                    data: {
+                        Id_Num_Un: Id_Num_UN
+                        , Id_Cnsc_Pasillo: Id_Cnsc_Pasillo
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+
+
+                                //pcastgon
+                                if (json.json.Id_Num_PasilloTipo == "1") {
+                                    
+                                    document.getElementById("btnCheckLineasIzq").style.visibility = "visible";
+                                    document.getElementById("btnQuitarLineasElegidas").style.visibility = "visible";
+                                    document.getElementById("btnCheckLineasDer").style.visibility = "visible";
+                                    document.getElementById("btnAgregarLineasElegidas").style.visibility = "visible";
+                                } else {
+                                    document.getElementById("btnCheckLineasIzq").style.visibility = "hidden";
+                                    document.getElementById("btnQuitarLineasElegidas").style.visibility = "hidden";
+                                    document.getElementById("btnCheckLineasDer").style.visibility = "hidden";
+                                    document.getElementById("btnAgregarLineasElegidas").style.visibility = "hidden";
+                                }
+
+                                $('#lblDescPasCat').text(_Nom_PasilloTipo);
+                                LlenaDdlDivision(json.json.Division, "#ddlDivPasCat")
+                                LlenaDdlCateg(json.json.Categoria, "#ddlCatPasCat")
+                                LlenaLineasIzq(json.json.Linea);
+                                LlenaLineasDer(json.json.PasilloUnCateg);
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+        }
+
+        $("#ddlDivPasCat").change(function () {
+
+            debugger;
+            var _Id_Num_Div = this.value;
+
+            var _Id_Num_UN = $("#hddIdUn").val();
+            var _Id_Cnsc_Pasillo = $("#hddIdCsnPasillo").val();
+
+
+                         $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("PasilloUnEditCateg", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                        , Id_Num_Div: _Id_Num_Div
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+
+                                LlenaDdlCateg(json.json.Categoria,"#ddlCatPasCat");
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+
+        });
+
+        $("#ddlCatPasCat").change(function () {
+
+            debugger;
+            var _Id_Num_Cat = $("#ddlCatPasCat").val();
+            var _Id_Num_Div = $("#ddlDivPasCat").val();
+            var _Id_Num_UN = $("#hddIdUn").val();
+            var _Id_Cnsc_Pasillo = $("#hddIdCsnPasillo").val();
+
+
+                $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("PasilloUnEditCateg", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                        , Id_Num_Div: _Id_Num_Div
+                        , Id_Num_Categ:_Id_Num_Cat
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+
+                                LlenaLineasIzq(json.json.Linea);
+                                LlenaLineasDer(json.json.PasilloUnCateg);
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+
+        });
+
+        function AgregarLineasElegidas()
+        {
+
+            debugger;
+
+            var _Id_Num_UN = $("#hddIdUn").val();
+            var _Id_Cnsc_Pasillo = $("#hddIdCsnPasillo").val();
+            var _Id_Num_Lineas = "";
+            var _Id_Num_Div = $("#ddlDivPasCat").val();
+            var _Id_Num_Categ = $("#ddlCatPasCat").val();
+
+
+            var table = document.getElementById("tblLineasDer");
+            var checkboxes = table.querySelectorAll('input[type=checkbox]');
+            //var val = checkboxes[0].checked;
+            debugger;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    debugger;
+                    if (_Id_Num_Lineas.length != 0) _Id_Num_Lineas = _Id_Num_Lineas + ",";
+                    _Id_Num_Lineas = _Id_Num_Lineas + checkboxes[i].id;
+
+                }
+
+            }
+
+            if (_Id_Num_Lineas.length != 0) {
+                $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("AddPasilloUnLinea", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                        , Id_Num_Lineas: _Id_Num_Lineas
+                        , Id_Num_Div:_Id_Num_Div
+                        , Id_Num_Categ:_Id_Num_Categ
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                        debugger;
+                        if (json.Success) {
+
+                            LlenaLineasIzq(json.json.Linea);
+                            LlenaLineasDer(json.json.PasilloUnCateg);
+                        }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+
+                    }
+                });
+            } else {
+
+            }
+
+        }
+
+         function QuitarLineasElegidas()
+        {
+
+            debugger;
+
+            var _Id_Num_UN = $("#hddIdUn").val();
+            var _Id_Cnsc_Pasillo = $("#hddIdCsnPasillo").val();
+            var _Id_Num_Lineas = "";
+            var _Id_Num_Div = $("#ddlDivPasCat").val();
+            var _Id_Num_Categ = $("#ddlCatPasCat").val();
+
+
+            var table = document.getElementById("tblLineasIzq");
+            var checkboxes = table.querySelectorAll('input[type=checkbox]');
+            //var val = checkboxes[0].checked;
+            debugger;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    debugger;
+                    if (_Id_Num_Lineas.length != 0) _Id_Num_Lineas = _Id_Num_Lineas + ",";
+                    _Id_Num_Lineas = _Id_Num_Lineas + checkboxes[i].id;
+
+                }
+
+            }
+
+            if (_Id_Num_Lineas.length != 0) {
+                $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("DelPasilloUnLinea", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                        , Id_Num_Lineas: _Id_Num_Lineas
+                        , Id_Num_Div:_Id_Num_Div
+                        , Id_Num_Categ:_Id_Num_Categ
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                        debugger;
+                        if (json.Success) {
+
+                            LlenaLineasIzq(json.json.Linea);
+                            LlenaLineasDer(json.json.PasilloUnCateg);
+                        }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+
+                    }
+                });
+            } else {
+
+            }
+
+        }
+
+
+
+
+        function LlenaDdlDivision(data,ddlId) {
+
+            var sel = $(ddlId);
+            //var sel = document.getElementById(ddlId);
+            sel.empty();
+            debugger;
+
+            sel.get(0).options[0] = new Option("--SELECCIONE DIVISION--", "0");
+            for (var i = 0; i < data.length; i++) {
+                sel.append('<option value="' + data[i].Id_Num_Div + '">' + data[i].Desc_Div + '</option>');
+            }
+        }
+
+        function LlenaDdlCateg(data, ddlId) {
+
+            var sel = $(ddlId);
+            //var sel = document.getElementById(ddlId);
+            sel.empty();
+            debugger;
+
+            sel.get(0).options[0] = new Option("--SELECCIONE CATEGORIA--", "0");
+            for (var i = 0; i < data.length; i++) {
+
+                debugger;
+                sel.append('<option value="' + data[i].Id_Num_Categ + '">' + data[i].Desc_Categ + '</option>');
+            }
+        }
+        function LlenaDdlPasillo(data, ddlId) {
+
+            var sel = $(ddlId);
+            //var sel = document.getElementById(ddlId);
+            sel.empty();
+            debugger;
+
+            sel.get(0).options[0] = new Option("--SELECCIONE PASILLO--", "0");
+            for (var i = 0; i < data.length; i++) {
+                sel.append('<option value="' + data[i].Id_Cnsc_Pasillo + '">' + data[i].Nom_Pasillo + '</option>');
+            }
+        }
+        //
+
+        function LlenaLineasIzq(data) {
+            $('#tblLineasIzq tbody').empty();
+
+            debugger;
+
+            //Append each row to html table Num_Orden
+            for (var i = 0; i < data.length; i++) {
+                tr = $('<tr/>');
+
+                var d = " data-numpasillo='" + $("#hddIdCsnPasillo").val()+ "'";
+                d = d + " data-numlinea='" + data[i].Id_Num_Linea + "'";
+                d = d + " data-numdiv='" + data[i].Id_Num_Div + "'";
+
+
+
+                tr.append("<td><input class='form-check-input' name='chElegible' type='checkbox'  id='chbElegIzq-" + data[i].Id_Num_Linea + "'>"
+                    + "<input type='text' style='width:35px;'" + d+" onchange='MoverLinea(this);' value='" + data[i].Num_Orden+"'/>"
+                    + data[i].Desc_Linea
+                    + "<br>"
+                    + "<p style='font-weight:bold;font-size:11px;'>"
+                    + data[i].Desc_Div
+                    + "/"
+                    + data[i].Desc_Categ
+                    + "</p></td>");
+
+                $('#tblLineasIzq').append(tr);
+            }
+        }
+
+        function LlenaLineasDer(data) {
+            $('#tblLineasDer tbody').empty();
+
+            debugger;
+
+            //Append each row to html table
+            for (var i = 0; i < data.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td><input class='form-check-input' name='chElegible' type='checkbox'  id='chbElegDer-" + data[i].Id_Num_Linea + "'>" + data[i].Desc_Linea + "</td>");
+
+                $('#tblLineasDer').append(tr);
+            }
+        }
+
+        function CheckAll (idTable) {
+            debugger;
+
+            var table = document.getElementById(idTable);
+            var checkboxes = table.querySelectorAll('input[type=checkbox]');
+            //var val = checkboxes[0].checked;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) { checkboxes[i].checked = false; }
+                else
+                { checkboxes[i].checked = true; }
+            }
+        }
+
+
+        function ActualizarPasaillo(Id_Cnsc_Pasillo, Id_Num_UN)
+        {
+            var _Nom_PasilloTipo = document.getElementById("desc-" + Id_Cnsc_Pasillo).value;
+            var _Num_Orden = document.getElementById("orden-" + Id_Cnsc_Pasillo).value;
+            debugger;
+             $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("UpdatePasilloUn", "Catalogo")',
+                data: {
+                    Id_Num_UN: Id_Num_UN
+                    , Id_Cnsc_Pasillo:Id_Cnsc_Pasillo
+                    , Nom_PasilloTipo:_Nom_PasilloTipo
+                    , Num_Orden:_Num_Orden
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        GetPasilloUn();
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+        }
+
+        function AddPasilloUnEsp() {
+                        debugger;
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("AddPasilloUnEsp", "Catalogo")',
+                data: {
+                    //  Id_Num_UN: _Id_Num_UN
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        GetPasilloUn();
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+        }
+         function AddPasillo()
+        {
+
+            debugger;
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("AddPasilloUn", "Catalogo")',
+                data: {
+                    //  Id_Num_UN: _Id_Num_UN
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        GetPasilloUn();
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+
+        }
+
+        function DelPasilloUn(_Id_Num_UN, _Id_Cnsc_Pasillo) {
+
+                        debugger;
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Action("DellPasilloUn", "Catalogo")',
+                data: {
+                    Id_Num_UN: _Id_Num_UN
+                    , Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        GetPasilloUn();
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+            });
+
+        }
+
+        function LlenaTblReporte(PasilloDetalle) {
+            $('#tblReporte tbody').empty();
+            //var tr;
+
+            debugger;
+
+            //Append each row to html table
+            for (var i = 0; i < PasilloDetalle.length; i++) {
+                tr = $('<tr/>');
+
+                tr.append("<td>" + PasilloDetalle[i].Desc_Div + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Num_OrdenPasillo + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Nom_Pasillo + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Id_Num_Categ + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Desc_Categ + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Num_OrdenLinea + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Id_Num_Linea + "</td>");
+                tr.append("<td>" + PasilloDetalle[i].Desc_Linea + "</td>");
+
+                $('#tblReporte').append(tr);
+            }
+        }
+
+        function Reporte() {
+            debugger;
+
+            var _hddIdUn = $("#hddIdUn").val();
+
+
+               $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("GetPasilloUnReporteMap", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _hddIdUn
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+                                $("#divReportes").css("display", "block");
+                                $("#divPasilloCategoria").css("display", "none");
+
+                                LlenaDdlPasillo(json.json.Pasillo, "#ddlPasilloReporte");
+                                LlenaDdlDivision(json.json.Division, "#ddlDivisionReporte");
+                                LlenaDdlCateg(json.json.Categoria, "#ddlCategoriaReporte");
+
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+        }
+
+        $("#ddlDivisionReporte").change(function () {
+
+            debugger;
+            var _Id_Num_Div = this.value;
+            var _Id_Num_UN = $("#hddIdUn").val();
+
+
+                         $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("GetPasilloUnReporteMap", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Num_Div: _Id_Num_Div
+
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+                                LlenaDdlPasillo(json.json.Pasillo, "#ddlPasilloReporte");
+                                LlenaDdlCateg(json.json.Categoria, "#ddlCategoriaReporte");
+                                LlenaTblReporte(json.json.PasilloDetalle);
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+
+        });
+
+        $("#ddlCategoriaReporte").change(function () {
+
+            debugger;
+            var _Id_Num_Cat = this.value;
+            var _Id_Num_UN = $("#hddIdUn").val();
+            var _Id_Num_Div = $("#ddlDivisionReporte").val();
+
+                         $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("GetPasilloUnReporteMap", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Num_Div: _Id_Num_Div
+                        , Id_Num_Categ: _Id_Num_Cat
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+                                //LlenaDdlPasillo(json.json.Pasillo, "#ddlPasilloReporte");
+                                LlenaTblReporte(json.json.PasilloDetalle);
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+
+        });
+
+
+         $("#ddlPasilloReporte").change(function () {
+
+            debugger;
+            var Id_Cnsc_Pasillo = this.value;
+            var _Id_Num_UN = $("#hddIdUn").val();
+            var _Id_Num_Div = $("#ddlDivisionReporte").val();
+             var _Id_Num_Cat = $("#ddlCategoriaReporte").val();
+             var _Id_Cnsc_Pasillo = $("#ddlPasilloReporte").val();
+
+                $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("GetPasilloUnReporteMap", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                        , Id_Num_Div: _Id_Num_Div
+                        , Id_Num_Cat: _Id_Num_Cat
+                        , Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+                                $('#tblReporte tbody').empty();
+                                //var tr;
+
+                                debugger;
+
+                                //Append each row to html table
+                                for (var i = 0; i < json.json.PasilloDetalle.length; i++) {
+                                    tr = $('<tr/>');
+
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Desc_Div + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Num_OrdenPasillo + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Nom_Pasillo + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Id_Num_Categ + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Desc_Categ + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Num_OrdenLinea + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Id_Num_Linea + "</td>");
+                                    tr.append("<td>" + json.json.PasilloDetalle[i].Desc_Linea + "</td>");
+
+                                    $('#tblReporte').append(tr);
+                                }
+
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+
+         });
+
+        function ReporteExcel(opcion) {
+            var _Id_Num_UN = "";
+
+            if (opcion == 2) {
+                _Id_Num_UN = $("#hddIdUn").val();
+            }
+
+            debugger;
+                            $.ajax({
+                    async: false,
+                    type: "get",
+                    url: '@Url.Action("PasilloRptExcel", "Catalogo")',
+                    data: {
+                        Id_Num_Un: _Id_Num_UN
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+        }
+
+
+        function MoverLinea(c) {
+            var _Id_Cnsc_Pasillo = c.dataset.numpasillo;
+            var _Id_Num_Linea = c.dataset.numlinea;
+            var _Num_Orden = c.value;
+            var _Id_Num_Div = $("#ddlDivPasCat").val();
+            var _Id_Num_Categ = $("#ddlCatPasCat").val();
+            debugger;
+             $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: '@Url.Action("MoverLinea", "Catalogo")',
+                    data: {
+                        Id_Cnsc_Pasillo: _Id_Cnsc_Pasillo
+                        , Id_Num_Linea: _Id_Num_Linea
+                        , Num_Orden: _Num_Orden
+                        , Id_Num_Div: _Id_Num_Div
+                        , Id_Num_Categ: _Id_Num_Categ
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                            debugger;
+                            if (json.Success) {
+
+                                LlenaLineasIzq(json.json.Linea);
+                                LlenaLineasDer(json.json.PasilloUnCateg);
+                            }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+
+                }
+                });
+
+        }
+    </script>
+}

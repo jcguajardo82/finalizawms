@@ -1,0 +1,39 @@
+﻿@{
+    string userName = ViewBag.Login != null ? ViewBag.Login.Username : "";
+    string descTda = Session["Desc_Num_UN"] != null ? Session["Desc_Num_UN"].ToString() : "";
+}
+
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+        </div>
+
+
+        <ul class="nav navbar-top-links navbar-right">
+            @if (descTda != "")
+            {
+                <li>
+                    <span class="m-r-sm text-muted welcome-message" data-i18n="topnav.welcometext" id="usrLuged-Name"> @descTda</span>
+                </li>
+            }
+            <li>
+                @*<img alt="image-profile" src="@Url.Content("~/Content/images/theme/profile.jpg")" class="rounded img-top-logued" />*@
+            </li>
+            @if (userName != "")
+            {
+                <li>
+                    <span class="m-r-sm text-muted welcome-message" data-i18n="topnav.welcometext" id="usrLuged-Name"> Juan @userName</span>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("DoLogout","Security")">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+            }
+        </ul>
+
+    </nav>
+</div>
+

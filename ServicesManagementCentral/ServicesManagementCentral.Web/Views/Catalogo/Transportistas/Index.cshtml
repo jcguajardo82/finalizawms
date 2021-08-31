@@ -1,0 +1,454 @@
+﻿@model IEnumerable<ServicesManagement.Web.Models.CarrierModel>
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Transportistas";
+
+}
+
+<link href="view-source:http://webapplayers.com/inspinia_admin-v2.8/sweetalert.html">
+<div class="row wrapper border-bottom white-bg page-heading">
+
+    <div class="col-lg-10">
+
+        <h2>@ViewBag.Title </h2>
+
+        <ol class="breadcrumb">
+
+            <li class="breadcrumb-item">
+
+                <a href="~/CPanel/Index">Home</a>
+
+            </li>
+
+            <li class="breadcrumb-item">
+
+                <a>Catalogo</a>
+
+            </li>
+
+            <li class="breadcrumb-item active">
+
+                <strong>Transportistas</strong>
+
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+<div class="row mt-2 mb-3">
+
+    <div class="col-12">
+
+        <div class="collapse" id="filter">
+
+            <div class="card card-body">
+
+                <form id="frmFilter">
+
+                    <div class="row">
+
+                        <div class="col col-xs-12 col-md-4">
+
+                            <div class="form-group">
+
+                                <label>Unidad de negocio</label>
+
+                                <input type="text" placeholder="Nombre de la UN" name="txtNomUn" class="form-control">
+
+                            </div>
+
+                        </div>
+
+                        <div class="col col-xs-12 col-md-4">
+
+                            <div class="form-group">
+
+                                <label>Nombre</label>
+
+                                <input type="text" placeholder="Nombre del Surtidor" name="txtSurtidor" class="form-control">
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="col col-xs-12 col-md-4 text-right">
+
+                            <button class="btn btn-success mt-4" type="button" onclick="Servicios.RefreshTable();"><i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">Buscar</span></button>
+
+                        </div>
+
+                    </div>
+
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="tblConsulta_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+
+    <div class="row">
+
+        <div class="col col-xs-6">
+
+            <div class="dt-buttons btn-group flex-wrap">
+
+                <button class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="tblConsulta" type="button"><span>Copy</span></button>
+
+                <button class="btn btn-secondary buttons-csv buttons-html5" tabindex="0" aria-controls="tblConsulta" type="button"><span>CSV</span></button>
+
+                <button class="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="tblConsulta" type="button"><span>Excel</span></button>
+
+            </div>
+
+        </div>
+
+        <div id="topRightSection" class="col-xs-12 col-md-6 text-right ">
+
+            <button type="button" class="btn btn-primary btn-circle mr-2" data-toggle="modal" data-target="#dlgCreateServicios">
+
+                <i class="fa fa-plus"></i>
+
+            </button>
+
+            <button type="button" class="btn btn-primary btn-circle mr-2" onclick="ShowFilter();">
+
+                <i class="fa fa-list"></i>
+
+            </button>
+
+            <button type="button" class="btn btn-primary btn-circle"> <i class="fa fa-refresh"></i></button>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-12">
+
+            <table id="tblConsulta" class="display table table-striped table-bordered table-hover table-responsive-md expand dataTable no-footer" role="grid" style="width: 1115px;">
+
+                <thead class="bg-primary">
+
+                    <tr role="row">
+
+                        <th class="text-center sorting" tabindex="0" aria-controls="tblConsulta" rowspan="1" colspan="1" style="width: 80px;">Num</th>
+
+                        <th class="sorting" tabindex="0" aria-controls="tblConsulta" rowspan="1" colspan="1">Unidad de Negocio</th>
+
+                        <th class="sorting" tabindex="0" aria-controls="tblConsulta" rowspan="1" colspan="1">Nombe</th>
+
+                        <th style="width: 50px;"></th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<input id="inTP" name="inTP" value="A" style="visibility:hidden" />
+<input id="Id_Carrier" name="Id_Carrier" value="A" style="visibility:hidden" />
+
+@Html.Partial("Transportistas/Create")
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetTrans();
+        });
+
+        function ShowFilter() {
+            $("#filter").collapse('toggle');
+        };
+
+        function GetTrans() {
+            //var _Id_Num_UN = $("#hddTda").val();
+            debugger;
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: '@Url.Action("GetTransportistas", "Catalogo")',
+                data: {
+                    //  Id_Num_UN: _Id_Num_UN
+                },
+                datatype: "html",
+                success: function (json) {
+                    if (json.Success) {
+                        $("#tblConsulta tbody").remove();
+                        //var tr;
+                        debugger;
+                        //Append each row to html table
+                        for (var i = 0; i < json.json.length; i++) {
+                            tr = $('<tr/>');
+                            //tr.append("<td class='row1'>" + json.json[i].Id_Num_Orden + "</td>");
+                            tr.append("<td>" + json.json[i].Id_Carrier + "</td>");
+                            tr.append("<td>" + json.json[i].Id_Num_UN + "</td>");
+                            tr.append("<td>" + json.json[i].Name + "</td>");
+                            //tr.append("<td><button type = 'button' class= 'btn btn-white btn-circle'> <i class='fa fa-edit'></i></button><button type='button' class='btn btn-warning btn-circle'> <i class='fa fa-minus'></i></button></td >")
+                            tr.append("<td><button onclick='EditSurtidores(" + json.json[i].Id_Carrier + ")' type = 'button' class= 'btn btn-white btn-circle'> <i class='fa fa-edit'></i></button><button type='button'  onclick='DeleteSurtidores(" + json.json[i].Id_Carrier + ")'  class='btn btn-warning btn-circle'> <i class='fa fa-minus'></i></button></td >")
+                            $('#tblConsulta').append(tr);
+
+                        }
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    bootbox.alert(errorThrown);
+                }
+            });
+        }
+
+        function AddSurtidores() {
+            if (document.getElementById("inTP").value == "E") {
+                saveEditSurtidor();
+            }
+            else {
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: '@Url.Action("AddTransportistas", "Catalogo")',
+                    data: {
+                        num: 0
+                        , name: document.getElementById("nameT").value
+                        , un: document.getElementById("Id_Num_Un").value
+                    },
+                    datatype: "html",
+                    success: function (json) {
+                        if (json.Success) {
+                            location.reload();
+                        }
+                        else { alert(json.Message) }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+
+                        bootbox.alert(errorThrown);
+
+
+
+                    }
+
+                });
+
+            }
+
+        }
+
+
+
+        function EditSurtidores(id) {
+
+            $.ajax({
+
+                async: false,
+
+                type: "GET",
+
+                url: '@Url.Action("GetTransportista", "Catalogo")',
+
+                data: {
+
+                    num: id
+
+                },
+
+                datatype: "html",
+
+                success: function (json) {
+
+                    if (json.Success) {
+
+
+
+                        //var tr;
+
+
+
+                        debugger;
+
+                        $('#dlgCreateServicios').modal('show');
+
+
+
+                        //document.getElementById("numE").value = json.json.Id_Num_Empleado;
+
+                        document.getElementById("nameT").value = json.json.Name;
+
+                        document.getElementById("Id_Num_Un").value = json.json.Id_Num_UN;
+
+
+
+                        document.getElementById("inTP").value = "E";
+
+                        $("#ddlEstatus").val("1");
+
+                        if (json.json.Activo == "false") { $("#ddlEstatus").val("2");}
+
+                        document.getElementById("Id_Carrier").value = id;
+
+                    }
+
+                }
+
+                , error: function (jqXHR, textStatus, errorThrown) {
+
+                    bootbox.alert(errorThrown);
+
+
+
+                }
+
+            });
+
+
+
+        }
+
+
+
+        function DeleteSurtidores(id) {
+            if (confirm('Esta seguro que desea eliminar el Transportista : ' + id)) {
+
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: '@Url.Action("DeleteTransportistas", "Catalogo")',
+                    data: {
+
+                        num: id
+
+                    },
+                    datatype: "html",
+                    success: function (json) {
+
+                        if (json.Success) {
+
+
+
+                            location.reload();
+
+                        }
+
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+
+                        bootbox.alert(errorThrown);
+
+
+
+                    }
+                });
+            }
+        }
+
+
+
+        function saveEditSurtidor() {
+
+
+
+            $.ajax({
+
+                async: false,
+
+                type: "GET",
+
+                url: '@Url.Action("EditTransportistas", "Catalogo")',
+
+                data: {
+
+                    num: document.getElementById("Id_Carrier").value
+
+                    , name: document.getElementById("nameT").value
+
+                    , un: document.getElementById("Id_Num_Un").value
+
+                    , status: "1"
+
+                },
+
+                datatype: "html",
+
+                success: function (json) {
+
+                    if (json.Success) {
+
+
+
+                        location.reload();
+
+                    }
+
+                    else { alert(json.Message) }
+
+                }
+
+                , error: function (jqXHR, textStatus, errorThrown) {
+
+                    bootbox.alert(errorThrown);
+
+
+
+                }
+
+            });
+
+        }
+
+
+
+
+
+
+
+        $('#dlgCreateServicios').on('show.bs.modal', function (e) {
+
+            LimpiaModal();
+
+        });
+
+
+
+        function LimpiaModal() {
+
+            $("#nameT").val("");
+
+            $("#Id_Num_Un").val("");           
+
+            $("#ddlEstatus").val("1");
+
+
+
+        }
+
+
+
+
+
+
+
+    </script>
+
+}
+
+
+
