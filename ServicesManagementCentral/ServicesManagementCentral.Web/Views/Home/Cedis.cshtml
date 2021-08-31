@@ -13,7 +13,7 @@
                 <thead style="background-color: #ed5565 !important;color: #ffffff">
 
                     @*background-color: #ed5565 !important;
-                    color: #ffffff;*@
+                        color: #ffffff;*@
                     <tr>
                         <th>UENO</th>
                     </tr>
@@ -42,7 +42,16 @@
                 <input type="hidden" id="hddOrderId" />
             </div>
             <div class="modal-body">
-
+                <div class="row">
+                    <div class="col-xs-3 col-md-3">
+                        <select id="combo" class="form-control">
+                            <option value="99">--Seleccione una opción--</option>
+                            <option value="0">Finalizar Surtido</option>
+                            <option value="7">Cancelación</option>
+                            <option value="8">Aceptar Orden</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
                         <table id="tblDetalle" class="table table-striped table-bordered table-hover table-responsive-md expand dataTable no-footer">
@@ -54,14 +63,14 @@
                                     <th>Descripcion</th>
                                     <th>Piezas</th>
                                     <th>Precio</th>
-                                    <th>Nuevas Piezas</th>                                                                                                                
+                                    <th>Nuevas Piezas</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
                 </div>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
@@ -132,9 +141,12 @@
 
             var table = document.getElementById("tblDetalle");
             var checkboxes = table.querySelectorAll('input[type=checkbox]');
-
-            var table = document.getElementById("tblDetalle");
-            var checkboxes = table.querySelectorAll('input[type=checkbox]');
+            var _estatus = $("#combo").val();
+            if (_estatus == "99")
+            {
+                $("#combo").focus();
+                return false;
+            }
             //var val = checkboxes[0].checked;
             var check = false;
             var cantOk = true;
@@ -225,10 +237,10 @@
                    url: '@Url.Action("Enviar", "Home")',
                    data: JSON.stringify({
 
-                    OrderNo: _OrderNo,                      
+                    OrderNo: _OrderNo,
                     Products: list,
-                    UeNo: _UeNo
-                      
+                    UeNo: _UeNo,
+                    estatus: _estatus
                    }),
 
                 contentType: "application/json; charset=utf-8",
@@ -243,7 +255,7 @@
                     else {
                         alert(json.Message);
                     }
-                 
+
                 }
                 , error: function (jqXHR, textStatus, errorThrown) {
                     //bootbox.alert(errorThrown);

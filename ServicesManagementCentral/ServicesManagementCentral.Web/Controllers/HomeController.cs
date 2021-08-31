@@ -79,7 +79,7 @@ namespace ServicesManagement.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Enviar(List<OrderDetailCap> Products, string UeNo, int OrderNo)
+        public ActionResult Enviar(List<OrderDetailCap> Products, string UeNo, int OrderNo, string estatus)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace ServicesManagement.Web.Controllers
                 o.Orden = new InformacionDetalleOrden();
                 o.Orden.NumeroOrden = OrderNo.ToString();
                 o.Orden.EsPickingManual = false;
-                o.Orden.EstatusUnidadEjecucion = "0";
+                o.Orden.EstatusUnidadEjecucion = estatus;
                 o.Orden.NumeroUnidadEjecucion = UeNo;
                 o.Orden.NumeroTienda = Convert.ToInt32(store);
                 o.Surtidor = new InformacionSurtidor();
