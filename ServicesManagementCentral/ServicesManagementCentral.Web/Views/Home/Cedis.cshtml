@@ -5,7 +5,7 @@
 
     List<OrdersCedis> orders = ViewBag.Cedis as List<OrdersCedis>;
 }
-<h2>WMS CEDIS</h2>
+<h2>WMS CEDIS - Procesos de Contingencia</h2>
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12">
         <div style="width:99%;">
@@ -15,7 +15,8 @@
                     @*background-color: #ed5565 !important;
                         color: #ffffff;*@
                     <tr>
-                        <th>UENO</th>
+                        <th>Numero de Pedido</th>
+                        <th>Estatus</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,6 +24,7 @@
                     {
                         <tr>
                             <td><a title='Click para ver el detalle de la orden' class='link-primary' onclick='PopUp("@item.UeNo",@item.OrderNo)'>@item.UeNo</a></td>
+                            <td>@item.Estatus</td>
                         </tr>
                     }
                 </tbody>
@@ -37,7 +39,7 @@
         <div class="modal-content">
             <div class="modal-header pt-3 pb-1">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Detalle  </h4>
+                <h4 class="modal-title">Detalle del Pedido</h4>
                 <input type="hidden" id="hddUeno" />
                 <input type="hidden" id="hddOrderId" />
             </div>
@@ -61,9 +63,9 @@
                                     <th>SKU</th>
                                     <th>EAN</th>
                                     <th>Descripcion</th>
-                                    <th>Piezas</th>
+                                    <th>Cantidad Solicitada</th>
                                     <th>Precio</th>
-                                    <th>Nuevas Piezas</th>
+                                    <th>Cantidad Surtida/A Confirmar</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

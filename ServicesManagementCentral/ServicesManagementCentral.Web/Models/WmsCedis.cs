@@ -17,7 +17,8 @@ namespace ServicesManagement.Web.Models
         public int Store { get; set; }
         public int SurtidorID { get; set; }
         public string NombreSurtidor { get; set; }
-                                  
+        public string Estatus { get; set; }
+
     }
 
     public class upCorpOms_Cns_UeNoSupplyProcess
