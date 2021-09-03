@@ -52,6 +52,12 @@
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>bin\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>bin\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.0.6\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -189,6 +195,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrdenesPorEmpacarController.cs" />
     <Compile Include="DALServicesM.cs" />
     <Compile Include="DAL\DALCallCenter.cs" />
     <Compile Include="DAL\DALWmsCedis.cs" />
@@ -196,6 +203,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Inspinia\Helpers\HMTLHelperExtensions.cs" />
     <Compile Include="Models\Api.cs" />
     <Compile Include="Models\CallCenterModel.cs" />
@@ -211,6 +219,7 @@
     <Compile Include="Models\DTO_UnidadEjecucion\InformacionProductoSuministrado.cs" />
     <Compile Include="Models\DTO_UnidadEjecucion\InformacionProductoSuministrar.cs" />
     <Compile Include="Models\DTO_UnidadEjecucion\InformacionSurtidor.cs" />
+    <Compile Include="Models\OrdenPorEmpacarModel.cs" />
     <Compile Include="Models\WmsCedis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -3549,6 +3558,7 @@
     <None Include="Properties\PublishProfiles\omsmercuriodesa - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\SorianaCallCenterQA - Web Deploy.pubxml" />
     <Content Include="Views\Home\Cedis.cshtml" />
+    <Content Include="Views\OrdenesPorEmpacar\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
