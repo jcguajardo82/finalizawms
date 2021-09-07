@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ServicesManagement.Web.Helpers;
+using System.Net;
 
 namespace ServicesManagement.Web.Controllers
 {
@@ -53,7 +54,7 @@ namespace ServicesManagement.Web.Controllers
                 
                 return Json(new { Status = 1, Message = "Successfully" });
             }
-            catch (Exception ex)
+            catch (AggregateException ex)
             {
                 return Json(new { Status = 0, Message = ex.Message });
             }
@@ -112,9 +113,12 @@ namespace ServicesManagement.Web.Controllers
                     Request.Embarques = embarques;
                     Request.siglasCliente = "SOR";
                     wsOrdenesPorEmpacar2.Soriana_WMS client = new wsOrdenesPorEmpacar2.Soriana_WMS();
+
+                    System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
                     //client.Credentials = System.Net.CredentialCache.DefaultCredentials;
                     //client.PreAuthenticate = true;
-                    client.Credentials = new System.Net.NetworkCredential("t_juangch", "Agosto.2021");
+                    //client.Credentials = new System.Net.NetworkCredential("t_juangch", "Agosto.2021");
                     //wsOrdenesPorEmpacar.GeneraEmbarqueResponse response = new wsOrdenesPorEmpacar.GeneraEmbarqueResponse();
 
                     var result = client.GeneraEmbarque(Request);
