@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="https://wmsqa.azurewebsites.net/Soriana_WMS.asmx?wsdl" filename="Soriana_WMS.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="https://wmsqa.azurewebsites.net/Soriana_WMS.asmx?disco" filename="Soriana_WMS.disco" />
+  </Results>
+</DiscoveryClientResultsFile>

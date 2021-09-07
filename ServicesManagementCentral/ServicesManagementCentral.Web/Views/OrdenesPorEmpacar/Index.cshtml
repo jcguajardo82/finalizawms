@@ -28,6 +28,7 @@
             </div>
             <div class="col-sm-3">
                 <input class="btn btn-primary" id="btnUpload" type="button" value="Subir Archivo" />
+                <input class="btn btn-primary" id="btnEnviar" onclick="Enviar()" type="button" value="Enviar" />
             </div>
         </div>
     </div>
@@ -55,189 +56,222 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if (Session["lstOrdenesPorEmpacar"] != null)
+                    {
+                        foreach (var item in (List<OrdenPorEmpacarModel>)Session["lstOrdenesPorEmpacar"])
+                        {
+                            <tr>
+                                <td>@item.Cantidad</td>
+                                <td>@item.PK</td>
+                                <td>@item.Referencia</td>
+                                <td>@item.RazonSocial</td>
+                                <td>@item.Direccion1</td>
+                                <td>@item.Direccion2</td>
+                                <td>@item.Colonia</td>
+                                <td>@item.Poblacion</td>
+                                <td>@item.CP</td>
+                                <td>@item.Telefono</td>
+                                <td>@item.Contacto</td>
+                                <td>@item.TipoGuia</td>
+                                <td>@item.Vehiculo</td>
+                                <td>@item.Currier</td>
+                                <td>@item.Tienda</td>
+                                <td>@item.Receptor</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
+        
     </div>
-</div>
-@section scripts{
-    @*CONFIGURACION DE TABLAS, FILTROS, BOTONES DE EXPORT*@
-    <script>
+    </div>
+    @section scripts{
+        @*CONFIGURACION DE TABLAS, FILTROS, BOTONES DE EXPORT*@
+        <script>
 
-    $(document).ready(function () {
-        $('#tblConsulta thead tr').clone(true).appendTo('#tblConsulta thead');
-        $('#tblConsulta thead tr:eq(0) th').each(function (i) {
-            if ($(this).attr('name') != "accion") {
-                var title = $(this).text();
-                $(this).html("<input type='search' class='form-control form-control-sm' placeholder='" + title + "' id='filtro"+i+"'  />");
+            $(document).ready(function () {
+                $('#tblConsulta thead tr').clone(true).appendTo('#tblConsulta thead');
+                $('#tblConsulta thead tr:eq(0) th').each(function (i) {
+                    if ($(this).attr('name') != "accion") {
+                        var title = $(this).text();
+                        $(this).html("<input type='search' class='form-control form-control-sm' placeholder='" + title + "' id='filtro" + i + "'  />");
 
-                $('input', this).on('keyup change', function () {
-                    debugger;
-                    if (table.column(i).search() !== this.value) {
-                        debugger;
-                        table
-                            .column(i)
-                            .search(this.value)
-                            .draw();
-                    }
-                });
+                        $('input', this).on('keyup change', function () {
+                            debugger;
+                            if (table.column(i).search() !== this.value) {
+                                debugger;
+                                table
+                                    .column(i)
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
 
-                $('input', this).on("input", function () {
-                    table
-                        .column(i)
-                        .search(this.value)
-                        .draw();
-                });
-            } else {
-                $(this).empty();
-            }
-        });
-
-        table = $('#tblConsulta').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "@Url.Content("~/OrdenesPorEmpacar/GetOrdenes")",
-                "type": "POST",
-                "datatype":"json"
-            },
-            "pageLength": 10,
-            "filter": true,
-            "responsivePriority": 1,
-            "data": null,
-            "columns": [
-                { "data": "Cantidad", "name": "Cantidad", "autoWidth": true },
-                { "data": "PK", "name": "PK", "autoWidth": true },
-                { "data": "Referencia", "name": "Referancia", "autoWidth": true },
-                { "data": "RazonSocial", "name": "RazonSocial", "autoWidth": true },
-                { "data": "Direccion1", "name": "Direccion1", "autoWidth": true },
-                { "data": "Direccion2", "name": "Direccion2", "autoWidth": true },
-                { "data": "Colonia", "name": "Colonia", "autoWidth": true },
-                { "data": "Poblacion", "name": "Poblacion", "autoWidth": true },
-                { "data": "CP", "name": "CP", "autoWidth": true },
-                { "data": "Telefono", "name": "Telefono", "autoWidth": true },
-                { "data": "Contacto", "name": "Contacto", "autoWidth": true },
-                { "data": "TipoGuia", "name": "TipoGuia", "autoWidth": true },
-                { "data": "Vehiculo", "name": "Vehiculo", "autoWidth": true },
-                { "data": "Currier", "name": "Currier", "autoWidth": true },
-                { "data": "Tienda", "name": "Tienda", "autoWidth": true },
-                { "data": "Receptor", "name": "Receptor", "autoWidth": true }
-
-            ]
-            , language:
-            {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-
-                },
-                "buttons": {
-                    "print": "Imprimir",
-                    "pageLength": 'Mostrar %d Registros'
-
-                }
-            },
-            dom: 'Bfrtip',
-            lengthMenu: [
-                [10, 25, 50, -1],
-                ['10 Registros', '25 Registros', '50 Registros', 'Mostrar Todos']
-            ],
-            buttons: [
-                { extend: 'pageLength', className: 'btn-primary' },
-                //{
-                //    text: 'Excel General',
-                //    action: function (e, dt, node, config) {
-                //        Excel();
-                //    }
-                //    , className: 'btn-primary'
-                //}
-
-            ],
-            fixedHeader: {
-                header: true,
-                footer: true
-            },
-            "scrollX": true
-            , "scrollY": "500px"
-            , "scrollCollapse": true
-        });
-    })
-
-    </script>
-
-    <script>
-
-        $(document).on("click", "#btnUpload", function () {
-            var files = $("#importFile").get(0).files;
-
-            var formData = new FormData();
-            formData.append('importFile', files[0]);
-
-            $.ajax({
-                url: '/OrdenesPorEmpacar/ImportFileTransPlazas',
-                data: formData,
-                type: 'POST',
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if (data.Status === 1) {
-                        //console.log(data);
-                        location.reload();
+                        $('input', this).on("input", function () {
+                            table
+                                .column(i)
+                                .search(this.value)
+                                .draw();
+                        });
                     } else {
-                        alert("Failed to Import");
+                        $(this).empty();
                     }
-                }
+                });
+
+                table = $('#tblConsulta').DataTable({
+
+                    //"data": null,
+                    //"columns": [
+                    //    { "data": "Cantidad", "name": "Cantidad", "autoWidth": true },
+                    //    { "data": "PK", "name": "PK", "autoWidth": true },
+                    //    { "data": "Referencia", "name": "Referancia", "autoWidth": true },
+                    //    { "data": "RazonSocial", "name": "RazonSocial", "autoWidth": true },
+                    //    { "data": "Direccion1", "name": "Direccion1", "autoWidth": true },
+                    //    { "data": "Direccion2", "name": "Direccion2", "autoWidth": true },
+                    //    { "data": "Colonia", "name": "Colonia", "autoWidth": true },
+                    //    { "data": "Poblacion", "name": "Poblacion", "autoWidth": true },
+                    //    { "data": "CP", "name": "CP", "autoWidth": true },
+                    //    { "data": "Telefono", "name": "Telefono", "autoWidth": true },
+                    //    { "data": "Contacto", "name": "Contacto", "autoWidth": true },
+                    //    { "data": "TipoGuia", "name": "TipoGuia", "autoWidth": true },
+                    //    { "data": "Vehiculo", "name": "Vehiculo", "autoWidth": true },
+                    //    { "data": "Currier", "name": "Currier", "autoWidth": true },
+                    //    { "data": "Tienda", "name": "Tienda", "autoWidth": true },
+                    //    { "data": "Receptor", "name": "Receptor", "autoWidth": true }
+
+                    //]
+                    language:
+                    {
+                        "sProcessing": "Procesando...",
+                        "sLengthMenu": "Mostrar _MENU_ registros",
+                        "sZeroRecords": "No se encontraron resultados",
+                        "sEmptyTable": "Ningún dato disponible en esta tabla",
+                        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Buscar:",
+                        "sUrl": "",
+                        "sInfoThousands": ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst": "Primero",
+                            "sLast": "Último",
+                            "sNext": "Siguiente",
+                            "sPrevious": "Anterior"
+
+                        },
+                        "oAria": {
+                            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+
+                        },
+                        "buttons": {
+                            "print": "Imprimir",
+                            "pageLength": 'Mostrar %d Registros'
+
+                        }
+                    },
+                    dom: 'Bfrtip',
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        ['10 Registros', '25 Registros', '50 Registros', 'Mostrar Todos']
+                    ],
+                    buttons: [
+                        { extend: 'pageLength', className: 'btn-primary' }
+                        //{
+                        //    text: 'Excel General',
+                        //    action: function (e, dt, node, config) {
+                        //        Excel();
+                        //    }
+                        //    , className: 'btn-primary'
+                        //}
+
+                    ],
+                    fixedHeader: {
+                        header: true,
+                        footer: true
+                    },
+                    "scrollX": true
+                    , "scrollY": "500px"
+                    , "scrollCollapse": true
+                });
+            })
+
+        </script>
+
+        <script>
+
+            $(document).on("click", "#btnUpload", function () {
+                var files = $("#importFile").get(0).files;
+
+                var formData = new FormData();
+                formData.append('importFile', files[0]);
+
+                $.ajax({
+                    url: '/OrdenesPorEmpacar/ImportFileOrdenes',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.Status === 1) {
+                            //console.log(data);
+                            location.reload();
+                        } else {
+                            alert("Failed to Import");
+                        }
+                    }
+                });
             });
-        });
 
-        function Excel() {
+            function Enviar() {
+                $.ajax({
+                    url: '/OrdenesPorEmpacar/Enviar',
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.Status === 1) {
+                            //console.log(data);
+                            location.reload();
+                        } else {
+                            alert(data.Message);
+                        }
+                    }
+                });
+            }
 
-            _IdTransportista = $("#filtro0").val();
-            _NomTransportista = $("#filtro1").val();
-            _IdPlaza = $("#filtro2").val();
-            _NomPlaza = $("#filtro3").val();
-            _PostalCode = $("#filtro4").val();
-            _DescTipoEnvio = $("#filtro5").val();
-            _CvePlaza = $("#filtro3").val();
+            function Excel() {
 
-            _CreatedId = $("#filtro6").val();
-            _CreatedDate = $("#filtro7").val();
-            _CreatedTime = $("#filtro8").val();
-            _BitActivo = $("#filtro9").val();
+                _IdTransportista = $("#filtro0").val();
+                _NomTransportista = $("#filtro1").val();
+                _IdPlaza = $("#filtro2").val();
+                _NomPlaza = $("#filtro3").val();
+                _PostalCode = $("#filtro4").val();
+                _DescTipoEnvio = $("#filtro5").val();
+                _CvePlaza = $("#filtro3").val();
 
-            var dataTable = $('#tblConsulta').DataTable();
-            var _searchValue = dataTable.search();
+                _CreatedId = $("#filtro6").val();
+                _CreatedDate = $("#filtro7").val();
+                _CreatedTime = $("#filtro8").val();
+                _BitActivo = $("#filtro9").val();
 
-
-            window.location = window.location.origin + '/Impex/ExcelTransPlazas?IdTransportista=' + _IdTransportista + "&NomTransportista=" + _NomTransportista
-                + "&IdPlaza=" + _IdPlaza + "&NomPlaza=" + _NomPlaza
-                + "&PostalCode=" + _PostalCode + "&DescTipoEnvio=" + _DescTipoEnvio
-                + "&CvePlaza=" + _CvePlaza
-                + "&CreatedId=" + _CreatedId + "&CreatedDate=" + _CreatedDate
-                + "&CreatedTime=" + _CreatedTime + "&BitActivo=" + _BitActivo
-                + "&searchValue=" + _searchValue
+                var dataTable = $('#tblConsulta').DataTable();
+                var _searchValue = dataTable.search();
 
 
-        }
+                window.location = window.location.origin + '/Impex/ExcelTransPlazas?IdTransportista=' + _IdTransportista + "&NomTransportista=" + _NomTransportista
+                    + "&IdPlaza=" + _IdPlaza + "&NomPlaza=" + _NomPlaza
+                    + "&PostalCode=" + _PostalCode + "&DescTipoEnvio=" + _DescTipoEnvio
+                    + "&CvePlaza=" + _CvePlaza
+                    + "&CreatedId=" + _CreatedId + "&CreatedDate=" + _CreatedDate
+                    + "&CreatedTime=" + _CreatedTime + "&BitActivo=" + _BitActivo
+                    + "&searchValue=" + _searchValue
 
-    </script>  }
+
+            }
+
+        </script>  }
 

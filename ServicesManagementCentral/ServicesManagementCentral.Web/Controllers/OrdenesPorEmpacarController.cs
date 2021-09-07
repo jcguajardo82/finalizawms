@@ -19,7 +19,7 @@ namespace ServicesManagement.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ImportFileTransPlazas(HttpPostedFileBase importFile)
+        public ActionResult ImportFileOrdenes(HttpPostedFileBase importFile)
         {
             if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
 
@@ -41,6 +41,88 @@ namespace ServicesManagement.Web.Controllers
             }
         }
         [HttpPost]
+        public ActionResult Enviar()
+        {
+            try
+            {
+
+                if (Session["lstOrdenesPorEmpacar"] != null)
+                    ConsumirWS();
+
+                Session["lstOrdenesPorEmpacar"] = null;
+                
+                return Json(new { Status = 1, Message = "Successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = 0, Message = ex.Message });
+            }
+        }
+        private void ConsumirWS()
+        {
+            List<OrdenPorEmpacarModel> lst = new List<OrdenPorEmpacarModel>();
+
+            if (Session["lstOrdenesPorEmpacar"] != null)
+            {
+                lst = (List<OrdenPorEmpacarModel>)Session["lstOrdenesPorEmpacar"];
+                var ordenes = lst.Select(x => x.Referencia).Distinct();
+
+                foreach (var order in ordenes)
+                {
+                    var item = lst.Where(x => x.Referencia == order).FirstOrDefault();
+
+                    //wsOrdenesPorEmpacar.UccList lstUcc = new wsOrdenesPorEmpacar.UccList();
+                    string[] lstUcc = new string[30];
+                    var uccs = lst.Where(x => x.Referencia == order).Select(x => x.PK);
+
+                    //foreach(var ucc in uccs)
+                    //{
+                    //    lstUcc.Add(ucc);
+                    //}
+                    var count = 0;
+                    foreach (var ucc in uccs)
+                    {
+                        lstUcc[count] = ucc;
+                        count++;
+                    }
+
+                    wsOrdenesPorEmpacar2.Embarque embarque = new wsOrdenesPorEmpacar2.Embarque();
+                    embarque.cantidad = item.Cantidad;
+                    embarque.codigoPostal = int.Parse(item.CP);
+                    embarque.colonia = item.Colonia;
+                    embarque.contacto = item.Contacto;
+                    embarque.direccion = item.Direccion1;
+                    embarque.montoAsegurado = 0;
+                    embarque.poblacion = item.Poblacion;
+                    embarque.razonSocial = item.RazonSocial;
+                    embarque.referencia2 = item.Referencia;
+                    embarque.referencia3 = item.Direccion2;
+                    embarque.referencia4 = item.Vehiculo;
+                    embarque.referencia5 = item.Currier;
+                    embarque.referencia6 = item.Tienda;
+                    embarque.referencia7 = item.Receptor;
+                    embarque.servicio = item.TipoGuia;
+                    embarque.telefono = double.Parse(item.Telefono);
+                    embarque.uccList = lstUcc;
+
+                    wsOrdenesPorEmpacar2.Embarques embarques = new wsOrdenesPorEmpacar2.Embarques();
+                    embarques.Embarque = embarque;
+
+                    wsOrdenesPorEmpacar2.EmbarqueRequest Request = new wsOrdenesPorEmpacar2.EmbarqueRequest();
+                    Request.Embarques = embarques;
+                    Request.siglasCliente = "SOR";
+                    wsOrdenesPorEmpacar2.Soriana_WMS client = new wsOrdenesPorEmpacar2.Soriana_WMS();
+                    //client.Credentials = System.Net.CredentialCache.DefaultCredentials;
+                    //client.PreAuthenticate = true;
+                    client.Credentials = new System.Net.NetworkCredential("t_juangch", "Agosto.2021");
+                    //wsOrdenesPorEmpacar.GeneraEmbarqueResponse response = new wsOrdenesPorEmpacar.GeneraEmbarqueResponse();
+
+                    var result = client.GeneraEmbarque(Request);
+
+                }
+            }
+        }
+        [HttpPost]
         public ActionResult GetOrdenes()
         {
             try
@@ -50,7 +132,7 @@ namespace ServicesManagement.Web.Controllers
                 if (Session["lstOrdenesPorEmpacar"] != null)
                     lst = (List<OrdenPorEmpacarModel>)Session["lstOrdenesPorEmpacar"];
 
-                return Json(new { Success = true, data = lst });
+                return Json(new { draw = 1, recordsFilter = lst.Count(), recordsTotal = lst.Count(), data = lst });
             }
             catch (Exception x)
             {
