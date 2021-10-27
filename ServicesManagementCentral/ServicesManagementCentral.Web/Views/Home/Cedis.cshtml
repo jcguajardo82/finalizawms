@@ -119,7 +119,7 @@
                             tr.append("<td>" + json.resp[i].Descripcion + "</td>");
                             tr.append("<td>" + json.resp[i].Piezas + "<input type='text' style='display:none;' disabled readonly class='form-control' id='Cant-" + json.resp[i].SKU + "' disabled value='" + json.resp[i].Piezas + "' /></td>");
                             tr.append("<td>" + json.resp[i].Precio + "</td>");
-                            tr.append("<td><input type=number id='nCant-" + json.resp[i].SKU + "' class='form-control-sm' value='0.00' /></td>");
+                            tr.append("<td><input type='number' onkeypress='return event.charCode >= 48 && event.charCode <= 57' min='0' id='nCant-" + json.resp[i].SKU + "' class='form-control-sm' value='0' /></td>");
 
 
                             $('#tblDetalle').append(tr);
