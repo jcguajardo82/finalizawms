@@ -3572,6 +3572,8 @@
     <Content Include="Views\Shared\Inspinia\_TopNavbar.cshtml" />
     <None Include="Properties\PublishProfiles\CallCenterCliente - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\CallCenterDesa - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\finalizasurtidoprod - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Finalizasurtidoqas - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\omsmercurio - Web Deploy.pubxml" />
     <Content Include="Views\Shared\Empty.cshtml" />

@@ -172,7 +172,7 @@ namespace ServicesManagement.Web.Controllers
                                 PK = objDataRow[1].ToString(),
                                 Referencia = objDataRow[2].ToString(),
                                 RazonSocial = objDataRow[3].ToString(),
-                                Direccion1 = objDataRow[5].ToString(),
+                                Direccion1 = objDataRow[4].ToString(),
                                 Direccion2 = objDataRow[5].ToString(),
                                 Colonia = objDataRow[6].ToString(),
                                 Poblacion = objDataRow[7].ToString(),
