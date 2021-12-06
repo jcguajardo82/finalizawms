@@ -103,7 +103,8 @@ namespace ServicesManagement.Web.Controllers
                     embarque.referencia6 = item.Tienda;
                     embarque.referencia7 = item.Receptor;
                     embarque.servicio = item.TipoGuia;
-                    embarque.telefono = double.Parse(item.Telefono);
+                    var tel = item.Telefono.Replace(" ", "");
+                    embarque.telefono = double.Parse(tel);
                     embarque.uccList = lstUcc;
 
                     wsOrdenesPorEmpacar2.Embarques embarques = new wsOrdenesPorEmpacar2.Embarques();
